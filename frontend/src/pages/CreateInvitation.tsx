@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, ChangeEvent } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ export default function CreateInvitation() {
   const [searchParams] = useSearchParams();
   const templateId = searchParams.get("template") || "classic";
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
@@ -29,8 +30,28 @@ export default function CreateInvitation() {
     venueName: "",
     address: "",
     message: "We are joyfully announcing our marriage and would be honored if you could join us for this special celebration.",
-    template: templateId
+    template: templateId,
+    photo: null as string | null
   });
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert("File size is too large. Please choose an image smaller than 5MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updateFormData("photo", reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removePhoto = () => {
+    updateFormData("photo", null);
+  };
 
   const nextStep = () => {
     if (currentStep < steps.length - 1) {
@@ -200,13 +221,41 @@ export default function CreateInvitation() {
                           onChange={(e) => updateFormData("message", e.target.value)}
                         />
                       </div>
-                      <div className="bg-neutral-50 rounded-2xl p-6 border-2 border-dashed border-neutral-200 flex flex-col items-center text-center">
-                         <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm">
-                           <Upload className="h-6 w-6 text-muted-foreground" />
-                         </div>
-                         <h3 className="font-medium mb-1">Upload Wedding Photo</h3>
-                         <p className="text-[16px] text-muted-foreground mb-4">PNG, JPG up to 10MB</p>
-                         <Button size="sm" variant="outline" className="rounded-full">Choose Image</Button>
+                      <div className="bg-neutral-50 rounded-2xl p-6 border-2 border-dashed border-neutral-200 flex flex-col items-center text-center overflow-hidden min-h-[200px] justify-center relative">
+                         <input 
+                           type="file" 
+                           ref={fileInputRef} 
+                           onChange={handleFileChange} 
+                           accept="image/*" 
+                           className="hidden" 
+                         />
+                         
+                         {formData.photo ? (
+                           <div className="relative group w-full h-full flex flex-col items-center">
+                             <img 
+                               src={formData.photo} 
+                               alt="Wedding preview" 
+                               className="max-h-48 rounded-xl shadow-md object-cover mb-4"
+                             />
+                             <div className="flex gap-2">
+                               <Button size="sm" variant="outline" className="rounded-full" onClick={() => fileInputRef.current?.click()}>
+                                 Change Photo
+                               </Button>
+                               <Button size="sm" variant="destructive" className="rounded-full" onClick={removePhoto}>
+                                 Remove
+                               </Button>
+                             </div>
+                           </div>
+                         ) : (
+                           <>
+                             <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm">
+                               <Upload className="h-6 w-6 text-muted-foreground" />
+                             </div>
+                             <h3 className="font-medium mb-1">Upload Wedding Photo</h3>
+                             <p className="text-[16px] text-muted-foreground mb-4">PNG, JPG up to 5MB</p>
+                             <Button size="sm" variant="outline" className="rounded-full" onClick={() => fileInputRef.current?.click()}>Choose Image</Button>
+                           </>
+                         )}
                       </div>
                     </motion.div>
                   )}
