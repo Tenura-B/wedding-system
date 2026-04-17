@@ -124,10 +124,10 @@ export default function Vendors() {
       <Navbar />
       
       <main className="flex-grow pt-24 bg-neutral-50">
-        <header className="bg-white py-16 border-b border-neutral-100">
+        <header className="bg-white py-12 md:py-16 border-b border-neutral-100">
            <div className="container mx-auto px-4 text-center">
-             <h1 className="text-4xl md:text-6xl font-serif mb-6">Curated Vendors</h1>
-             <p className="text-muted-foreground max-w-2xl mx-auto text-lg">We've partnered with the finest wedding professionals to bring your vision to life with zero compromise.</p>
+             <h1 className="text-3xl md:text-6xl font-serif mb-6 leading-tight">Curated Vendors</h1>
+             <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg px-2">We've partnered with the finest wedding professionals to bring your vision to life with zero compromise.</p>
            </div>
         </header>
 

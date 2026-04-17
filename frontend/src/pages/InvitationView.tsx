@@ -82,13 +82,13 @@ export default function InvitationView() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2 }}
-            className={`flex flex-col md:flex-row items-center justify-center gap-4 md:gap-12 ${isMinimal ? 'font-sans' : 'font-serif'}`}
+            className={`flex flex-col md:flex-row items-center justify-center gap-4 md:gap-12 ${isMinimal ? 'font-sans text-center' : 'font-serif text-center md:text-left'}`}
           >
-            <h1 className="text-6xl md:text-8xl lg:text-9xl tracking-tight">
+            <h1 className="text-5xl md:text-8xl lg:text-9xl tracking-tight break-words px-4">
               {data.brideName.split(' ')[0]}
             </h1>
-            <Heart className={`h-12 w-12 ${isDark ? 'text-amber-500' : 'text-rose-400'} animate-pulse`} />
-            <h1 className="text-6xl md:text-8xl lg:text-9xl tracking-tight">
+            <Heart className={`h-8 w-8 md:h-12 md:w-12 ${isDark ? 'text-amber-500' : 'text-rose-400'} animate-pulse`} />
+            <h1 className="text-5xl md:text-8xl lg:text-9xl tracking-tight break-words px-4">
               {data.groomName.split(' ')[0]}
             </h1>
           </motion.div>
@@ -97,14 +97,14 @@ export default function InvitationView() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 1 }}
-            className="space-y-6"
+            className="space-y-6 text-center"
           >
-            <p className={`text-xl md:text-2xl font-light tracking-wide ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>
+            <p className={`text-lg md:text-2xl font-light tracking-wide ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>
               Are Tying the Knot
             </p>
-            <div className={`h-1 w-24 mx-auto ${isDark ? 'bg-amber-500' : 'bg-neutral-900'}`} />
+            <div className={`h-[1px] w-24 mx-auto ${isDark ? 'bg-amber-500' : 'bg-neutral-900'}`} />
             <p 
-              className={`text-2xl md:text-3xl font-serif max-w-2xl mx-auto leading-relaxed px-4 ${isMinimal ? 'font-sans italic' : ''}`}
+              className={`text-xl md:text-3xl font-serif max-w-2xl mx-auto leading-relaxed px-6 ${isMinimal ? 'font-sans italic' : ''}`}
             >
               "{data.message}"
             </p>

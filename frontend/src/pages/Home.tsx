@@ -95,10 +95,10 @@ export default function Home() {
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
         
         <div className="container mx-auto relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
-            <div className="max-w-2xl">
+          <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-16 md:mb-20 gap-8 text-center md:text-left">
+            <div className="max-w-2xl px-4">
               <span className="text-gold text-[16px] tracking-[4px] uppercase font-bold mb-4 block">Collections</span>
-              <h2 className="text-4xl md:text-6xl font-serif leading-tight">Featured Designs</h2>
+              <h2 className="text-3xl md:text-6xl font-serif leading-tight">Featured Designs</h2>
             </div>
             <Link to="/templates" className="group flex items-center gap-2 text-ink/40 hover:text-gold transition-colors text-[16px] uppercase tracking-widest font-bold">
               View All <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -192,10 +192,10 @@ export default function Home() {
       {/* 🧩 SECTION 3: VENDOR SHOWCASE */}
       <section className="py-32 px-6 bg-white overflow-hidden">
         <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
-            <div className="max-w-2xl">
+          <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-16 md:mb-20 gap-8 text-center md:text-left">
+            <div className="max-w-2xl px-4">
               <span className="text-gold text-[16px] tracking-[4px] uppercase font-bold mb-4 block">Marketplace</span>
-              <h2 className="text-4xl md:text-6xl font-serif leading-tight">Trusted Vendors</h2>
+              <h2 className="text-3xl md:text-6xl font-serif leading-tight">Trusted Vendors</h2>
             </div>
             <Link to="/vendors" className="group flex items-center gap-2 text-ink/40 hover:text-gold transition-colors text-[16px] uppercase tracking-widest font-bold">
               Explore All <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />

@@ -11,8 +11,8 @@ export default function Footer() {
               <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center text-white">
                 <Heart className="h-4 w-4 fill-current" />
               </div>
-              <span className="text-xl font-serif tracking-tight text-black">
-                Belle Vows
+              <span className="text-xl font-serif tracking-tight text-black uppercase">
+                Ethereal
               </span>
             </Link>
             <p className="text-[16px] text-muted-foreground leading-relaxed max-w-xs">
@@ -68,10 +68,10 @@ export default function Footer() {
         </div>
         
         <div className="pt-10 border-t border-neutral-200 flex flex-col md:flex-row justify-between items-center gap-4">
-           <p className="text-[16px] text-muted-foreground">© 2026 Belle Vows Platform. All rights reserved.</p>
+           <p className="text-[16px] text-muted-foreground">© 2026 Ethereal Platform. All rights reserved.</p>
            <div className="flex gap-6">
-              <span className="text-[16px] text-muted-foreground">Designed with Love</span>
-              <span className="text-[16px] text-muted-foreground">Handcrafted for You</span>
+              <Link to="#" className="text-[16px] text-muted-foreground hover:text-black transition-colors">Privacy Policy</Link>
+              <Link to="#" className="text-[16px] text-muted-foreground hover:text-black transition-colors">Terms and Conditions</Link>
            </div>
         </div>
       </div>

@@ -47,12 +47,12 @@ export default function Templates() {
       <Navbar />
       
       <main className="flex-grow pt-24 pb-16">
-        <header className="py-16 bg-white border-b border-neutral-100">
-          <div className="container mx-auto px-4 text-center">
+        <header className="py-16 bg-white border-b border-neutral-100 relative overflow-hidden">
+          <div className="container mx-auto px-4 text-center relative z-10">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-serif mb-6"
+              className="text-4xl md:text-6xl font-serif mb-6 px-2"
             >
               Exquisite Templates
             </motion.h1>
@@ -60,11 +60,13 @@ export default function Templates() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-muted-foreground max-w-2xl mx-auto text-lg"
+              className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg px-4"
             >
               Every wedding is a unique story. Find the perfect design to announce your celebration of love.
             </motion.p>
           </div>
+          {/* Subtle background glow to keep it premium but contained */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gold/5 blur-3xl rounded-full -translate-y-1/2 translate-x-1/2" />
         </header>
 
         <section className="container mx-auto px-4 py-12">
@@ -111,9 +113,9 @@ export default function Templates() {
                 </div>
                 
                 <div className="px-2">
-                  <div className="flex justify-between items-start mb-3">
+                  <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-4">
                     <h3 className="text-2xl font-serif text-neutral-900">{template.name}</h3>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-wrap">
                       {template.tags.map(tag => (
                         <Badge key={tag} variant="outline" className="border-black text-black px-3 py-1 text-[16px] uppercase font-bold tracking-wider">
                           {tag}
@@ -134,8 +136,8 @@ export default function Templates() {
         </section>
 
         {/* Feature Banner */}
-        <section className="container mx-auto px-4 py-16">
-          <div className="relative rounded-[3rem] overflow-hidden text-center text-white h-[450px] flex items-center justify-center shadow-2xl">
+        <section className="container mx-auto px-4 py-16 overflow-hidden">
+          <div className="relative rounded-[2.5rem] md:rounded-[3rem] overflow-hidden text-center text-white min-h-[400px] md:h-[450px] flex items-center justify-center shadow-2xl py-12 md:py-0">
               {/* Background Image */}
               <img 
                 src="/images/88.jpg" 

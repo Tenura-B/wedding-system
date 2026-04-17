@@ -59,22 +59,22 @@ export default function CreateInvitation() {
       
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-4 max-w-4xl">
-          <header className="text-center mb-12">
-             <h1 className="text-3xl md:text-5xl font-serif mb-4">Create Your Invitation</h1>
-             <p className="text-muted-foreground">Follow the steps below to craft your digital masterpiece.</p>
+          <header className="text-center mb-10 md:mb-12 px-4">
+             <h1 className="text-3xl md:text-5xl font-serif mb-4 leading-tight">Create Your Invitation</h1>
+             <p className="text-muted-foreground text-sm md:text-base">Follow the steps below to craft your digital masterpiece.</p>
           </header>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-12">
             {/* Progress Sidebar */}
             <div className="lg:col-span-1">
-              <div className="flex lg:flex-col lg:gap-16 gap-4 overflow-x-auto pb-4 lg:pb-0 h-full">
+              <div className="flex lg:flex-col lg:gap-16 gap-2 justify-between lg:justify-start h-full">
                 {steps.map((step, i) => (
                   <div 
                     key={step.id} 
-                    className={`flex items-center gap-4 min-w-[150px] lg:min-w-0 transition-opacity ${currentStep === i ? 'opacity-100' : 'opacity-70'}`}
+                    className={`flex items-center gap-4 transition-opacity ${currentStep === i ? 'opacity-100' : 'opacity-70'}`}
                   >
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 ${currentStep >= i ? 'bg-black text-white border-black shadow-lg' : 'bg-white text-muted-foreground border-neutral-200'} transition-all`}>
-                       {currentStep > i ? <CheckCircle2 className="h-6 w-6" /> : step.icon}
+                    <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center border-2 ${currentStep >= i ? 'bg-black text-white border-black shadow-lg' : 'bg-white text-muted-foreground border-neutral-200'} transition-all`}>
+                       {currentStep > i ? <CheckCircle2 className="h-5 w-5 md:h-6 md:w-6" /> : step.icon}
                     </div>
                     <div className="hidden lg:block">
                       <p className="text-[16px] uppercase font-bold tracking-[0.2em] text-muted-foreground mb-1">Step {i + 1}</p>
@@ -87,7 +87,7 @@ export default function CreateInvitation() {
 
             {/* Form Area */}
             <div className="lg:col-span-3">
-              <div className="bg-white rounded-[2rem] p-8 md:p-12 shadow-sm border border-neutral-100 min-h-[400px] flex flex-col justify-between">
+              <div className="bg-white rounded-[1.5rem] md:rounded-[2rem] p-5 sm:p-8 md:p-12 shadow-sm border border-neutral-100 min-h-[400px] flex flex-col justify-between">
                 <AnimatePresence mode="wait">
                   {currentStep === 0 && (
                     <motion.div 
@@ -212,10 +212,10 @@ export default function CreateInvitation() {
                   )}
                 </AnimatePresence>
 
-                <div className="flex justify-between items-center mt-12 pt-8 border-t border-neutral-100">
-                  <Button 
+                <div className="flex flex-col sm:flex-row gap-4 justify-between items-center mt-12 pt-8 border-t border-neutral-100">
+                    <Button 
                     variant="ghost" 
-                    className="rounded-full px-6"
+                    className="rounded-full px-6 w-full sm:w-auto order-2 sm:order-1"
                     onClick={prevStep}
                     disabled={currentStep === 0}
                   >
@@ -223,7 +223,7 @@ export default function CreateInvitation() {
                     Back
                   </Button>
                   <Button 
-                    className="rounded-full px-8 bg-black text-white hover:bg-neutral-800"
+                    className="rounded-full px-8 bg-black text-white hover:bg-neutral-800 w-full sm:w-auto order-1 sm:order-2"
                     onClick={nextStep}
                     disabled={
                       (currentStep === 0 && (!formData.brideName || !formData.groomName)) ||
