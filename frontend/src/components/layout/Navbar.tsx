@@ -3,10 +3,12 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Heart, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import AuthModal from "../auth/AuthModal";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -49,8 +51,12 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
-          <Button asChild size="lg" className="btn-ethereal bg-ink text-white hover:bg-ink/90 shadow-lg text-[16px] uppercase tracking-wider px-8">
-            <Link to="/create">Sign In</Link>
+          <Button 
+            onClick={() => setIsAuthModalOpen(true)}
+            size="lg" 
+            className="btn-ethereal bg-ink text-white hover:bg-ink/90 shadow-lg text-[16px] uppercase tracking-wider px-8 cursor-pointer"
+          >
+            Sign In
           </Button>
         </div>
 
@@ -83,13 +89,24 @@ export default function Navbar() {
                   {link.name}
                 </Link>
               ))}
-              <Button asChild className="btn-ethereal w-full bg-ink text-white hover:bg-ink/90 h-12">
-                <Link to="/create" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
+              <Button 
+                className="btn-ethereal w-full bg-ink text-white hover:bg-ink/90 h-12"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setIsAuthModalOpen(true);
+                }}
+              >
+                Sign In
               </Button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+      />
     </nav>
   );
 }
