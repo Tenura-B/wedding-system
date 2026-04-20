@@ -28,6 +28,7 @@ import {
   ExternalLink
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import { Badge } from "@/components/ui/badge";
 import { TemplatePreview } from "@/components/invitation/TemplatePreview";
 
@@ -77,6 +78,7 @@ export default function CreateInvitation() {
   const [currentStep, setCurrentStep] = useState(0);
   const [format, setFormat] = useState<"website" | "card" | null>(null);
   const [isPublished, setIsPublished] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
   const [isCopying, setIsCopying] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -154,10 +156,15 @@ export default function CreateInvitation() {
   };
 
   const publishInvitation = () => {
-    const slug = `${formData.brideName.toLowerCase().split(' ')[0]}-${formData.groomName.toLowerCase().split(' ')[0]}-${Date.now().toString().slice(-4)}`;
-    localStorage.setItem(`wedding-${slug}`, JSON.stringify(formData));
-    setIsPublished(true);
-    setPublishedSlug(slug);
+    setIsPublishing(true);
+    // Simulate a brief premium "creation" moment
+    setTimeout(() => {
+      const slug = `${formData.brideName.toLowerCase().split(' ')[0]}-${formData.groomName.toLowerCase().split(' ')[0]}-${Date.now().toString().slice(-4)}`;
+      localStorage.setItem(`wedding-${slug}`, JSON.stringify(formData));
+      setIsPublished(true);
+      setPublishedSlug(slug);
+      setIsPublishing(false);
+    }, 2000);
   };
 
   const handlePreview = () => {
@@ -180,7 +187,7 @@ export default function CreateInvitation() {
     <div className="min-h-screen bg-[#FBFBFD]">
       <Navbar isDark={false} />
 
-      <main className="pt-24 pb-20 px-6 md:px-12 transition-colors duration-1000 bg-[#FBFBFD]">
+      <main className="pt-20 md:pt-24 pb-20 px-4 md:px-12 transition-colors duration-1000 bg-[#FBFBFD]">
         <div className="container mx-auto">
 
           <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-12">
@@ -188,22 +195,22 @@ export default function CreateInvitation() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              <h1 className="text-4xl md:text-7xl font-serif mb-4 text-neutral-900 transition-colors duration-500">
+              <h1 className="text-3xl md:text-7xl font-serif mb-4 text-neutral-900 transition-colors duration-500">
                 {currentStep === 2 ? 'Final Polish' : 'Invitation Details'}
               </h1>
-              <p className="text-md uppercase tracking-[0.3em] font-bold text-neutral-400 transition-colors duration-500">
+              <p className="text-[10px] md:text-md uppercase tracking-[0.3em] font-bold text-neutral-400 transition-colors duration-500">
                 Step {currentStep + 1} <span className="mx-2 opacity-30">/</span> {steps[currentStep].title}
               </p>
             </motion.div>
 
-            <div className="flex p-1.5 rounded-[2rem] border transition-all duration-700 shadow-sm relative z-10 overflow-hidden bg-neutral-100 border-neutral-200">
+            <div className="flex p-1 rounded-[1.5rem] md:rounded-[2rem] border transition-all duration-700 shadow-sm relative z-10 overflow-hidden bg-neutral-100 border-neutral-200">
               {steps.map((step, i) => (
                 <div
                   key={step.id}
-                  className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all duration-500 whitespace-nowrap ${currentStep === i ? 'bg-white text-black shadow-md' : 'text-neutral-400'}`}
+                  className={`flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2 md:py-3 rounded-[1.2rem] md:rounded-2xl transition-all duration-500 whitespace-nowrap ${currentStep === i ? 'bg-white text-black shadow-md' : 'text-neutral-400'}`}
                 >
-                  {currentStep > i ? <CheckCircle2 className="h-4 w-4 text-emerald-500" /> : step.icon}
-                  <span className="text-[11px] font-bold uppercase tracking-[0.2em] hidden sm:inline">{step.title}</span>
+                  {currentStep > i ? <CheckCircle2 className="h-4 w-4 text-emerald-500" /> : <div className="h-4 w-4 flex items-center justify-center shrink-0">{step.icon}</div>}
+                  <span className="text-[9px] md:text-[11px] font-bold uppercase tracking-[0.2em] hidden sm:inline">{step.title}</span>
                 </div>
               ))}
             </div>
@@ -213,7 +220,7 @@ export default function CreateInvitation() {
 
             {/* Form Side - Becomes Full Width and Centered for steps 0-1 */}
             <div className={`transition-all duration-1000 mx-auto w-full ${currentStep === 2 ? 'lg:col-span-12 max-w-[1440px]' : 'lg:col-span-12 max-w-5xl'}`}>
-              <div className={`transition-all duration-1000 ${currentStep === 2 ? 'bg-transparent border-none shadow-none p-0' : 'bg-white rounded-[2.5rem] p-8 md:p-10 shadow-xl border border-neutral-200/50 min-h-[600px] flex flex-col justify-between relative overflow-hidden'}`}>
+              <div className={`transition-all duration-1000 ${currentStep === 2 ? 'bg-transparent border-none shadow-none p-0' : 'bg-white rounded-3xl md:rounded-[2.5rem] p-5 md:p-10 shadow-xl border border-neutral-200/50 min-h-[500px] md:min-h-[600px] flex flex-col justify-between relative overflow-hidden'}`}>
 
                 <AnimatePresence mode="wait">
                   {/* Phase 1: Details */}
@@ -239,7 +246,7 @@ export default function CreateInvitation() {
                               <Label className="text-neutral-400 uppercase tracking-widest text-[10px] font-bold">Bride's Full Name</Label>
                               <Input
                                 placeholder="Elena Gilbert"
-                                className="h-14 rounded-2xl px-6 text-lg border-neutral-100 bg-neutral-50/50"
+                                className="h-12 md:h-14 rounded-xl md:rounded-2xl px-4 md:px-6 text-base md:text-lg border-neutral-100 bg-neutral-50/50"
                                 value={formData.brideName}
                                 onChange={(e) => setFormData(prev => ({ ...prev, brideName: e.target.value }))}
                               />
@@ -248,7 +255,7 @@ export default function CreateInvitation() {
                               <Label className="text-neutral-400 uppercase tracking-widest text-[10px] font-bold">Groom's Full Name</Label>
                               <Input
                                 placeholder="Damon Salvatore"
-                                className="h-14 rounded-2xl px-6 text-lg border-neutral-100 bg-neutral-50/50"
+                                className="h-12 md:h-14 rounded-xl md:rounded-2xl px-4 md:px-6 text-base md:text-lg border-neutral-100 bg-neutral-50/50"
                                 value={formData.groomName}
                                 onChange={(e) => setFormData(prev => ({ ...prev, groomName: e.target.value }))}
                               />
@@ -265,7 +272,7 @@ export default function CreateInvitation() {
                               <Label className="text-neutral-400 uppercase tracking-widest text-[10px] font-bold">Wedding Date</Label>
                               <Input
                                 type="date"
-                                className="h-14 rounded-2xl px-6 text-lg border-neutral-100 bg-neutral-50/50"
+                                className="h-12 md:h-14 rounded-xl md:rounded-2xl px-4 md:px-6 text-base md:text-lg border-neutral-100 bg-neutral-50/50"
                                 value={formData.date}
                                 onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
                               />
@@ -274,7 +281,7 @@ export default function CreateInvitation() {
                               <Label className="text-neutral-400 uppercase tracking-widest text-[10px] font-bold">Start Time</Label>
                               <Input
                                 type="time"
-                                className="h-14 rounded-2xl px-6 text-lg border-neutral-100 bg-neutral-50/50"
+                                className="h-12 md:h-14 rounded-xl md:rounded-2xl px-4 md:px-6 text-base md:text-lg border-neutral-100 bg-neutral-50/50"
                                 value={formData.time}
                                 onChange={(e) => setFormData(prev => ({ ...prev, time: e.target.value }))}
                               />
@@ -291,7 +298,7 @@ export default function CreateInvitation() {
                               <Label className="text-neutral-400 uppercase tracking-widest text-[10px] font-bold">Venue Name</Label>
                               <Input
                                 placeholder="The Grand Palace"
-                                className="h-14 rounded-2xl px-6 text-lg border-neutral-100 bg-neutral-50/50"
+                                className="h-12 md:h-14 rounded-xl md:rounded-2xl px-4 md:px-6 text-base md:text-lg border-neutral-100 bg-neutral-50/50"
                                 value={formData.venueName}
                                 onChange={(e) => setFormData(prev => ({ ...prev, venueName: e.target.value }))}
                               />
@@ -300,7 +307,7 @@ export default function CreateInvitation() {
                               <Label className="text-neutral-400 uppercase tracking-widest text-[10px] font-bold">Full Address</Label>
                               <Textarea
                                 placeholder="123 Wedding Lane, Estate Valley..."
-                                className="min-h-[120px] rounded-2xl px-6 py-4 text-lg border-neutral-100 bg-neutral-50/50"
+                                className="min-h-[100px] md:min-h-[120px] rounded-xl md:rounded-2xl px-4 md:px-6 py-3 md:py-4 text-base md:text-lg border-neutral-100 bg-neutral-50/50"
                                 value={formData.address}
                                 onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
                               />
@@ -316,7 +323,7 @@ export default function CreateInvitation() {
                             <div className="space-y-2">
                               <Label className="text-neutral-400 uppercase tracking-widest text-[10px] font-bold">Invitee Message</Label>
                               <Textarea
-                                className="min-h-[100px] rounded-2xl px-6 py-4 text-lg border-neutral-100 bg-neutral-50/50"
+                                className="min-h-[80px] md:min-h-[100px] rounded-xl md:rounded-2xl px-4 md:px-6 py-3 md:py-4 text-base md:text-lg border-neutral-100 bg-neutral-50/50"
                                 value={formData.message}
                                 onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
                               />
@@ -326,18 +333,18 @@ export default function CreateInvitation() {
                               <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
                               {formData.photo ? (
                                 <div className="relative group">
-                                  <img src={formData.photo} className="h-32 w-48 object-cover rounded-2xl shadow-lg" alt="" />
+                                  <img src={formData.photo} className="h-24 md:h-32 w-40 md:w-48 object-cover rounded-2xl shadow-lg" alt="" />
                                   <Button size="icon" variant="destructive" className="absolute -top-2 -right-2 rounded-full h-8 w-8" onClick={() => setFormData(prev => ({ ...prev, photo: null }))}>
                                     <Trash2 className="h-4 w-4" />
                                   </Button>
                                 </div>
                               ) : (
                                 <>
-                                  <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center mb-3 shadow-sm text-neutral-400">
-                                    <Upload className="h-6 w-6" />
+                                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white flex items-center justify-center mb-2 md:mb-3 shadow-sm text-neutral-400">
+                                    <Upload className="h-5 w-5 md:h-6 md:w-6" />
                                   </div>
-                                  <p className="font-medium text-sm mb-1">Add a Photo of You Both</p>
-                                  <Button variant="outline" size="sm" className="rounded-full mt-2" onClick={() => fileInputRef.current?.click()}>Upload Image</Button>
+                                  <p className="font-bold text-xs mb-1">Add a Photo of You Both</p>
+                                  <Button variant="outline" size="sm" className="rounded-full mt-2 h-9" onClick={() => fileInputRef.current?.click()}>Upload Image</Button>
                                 </>
                               )}
                             </div>
@@ -360,36 +367,36 @@ export default function CreateInvitation() {
                       <div className="grid grid-cols-1 gap-4">
                         <button
                           onClick={() => setFormat('website')}
-                          className={`group p-8 rounded-[2rem] border-2 transition-all duration-500 text-left relative overflow-hidden ${format === 'website' ? 'border-black bg-black text-white shadow-2xl scale-[1.02]' : 'border-neutral-100 bg-neutral-50 hover:border-neutral-300'}`}
+                          className={`group p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border-2 transition-all duration-500 text-left relative overflow-hidden ${format === 'website' ? 'border-black bg-black text-white shadow-2xl scale-[1.02]' : 'border-neutral-100 bg-neutral-50 hover:border-neutral-300'}`}
                         >
                           <div className="flex items-start justify-between mb-4">
-                            <div className={`p-4 rounded-2xl transition-colors ${format === 'website' ? 'bg-white/10' : 'bg-white shadow-sm text-neutral-400'}`}>
-                              <Globe className="h-8 w-8" />
+                            <div className={`p-3 md:p-4 rounded-xl md:rounded-2xl transition-colors ${format === 'website' ? 'bg-white/10' : 'bg-white shadow-sm text-neutral-400'}`}>
+                              <Globe className="h-6 w-6 md:h-8 md:w-8" />
                             </div>
-                            {format === 'website' && <CheckCircle2 className="h-6 w-6 text-emerald-400 animate-in zoom-in" />}
+                            {format === 'website' && <CheckCircle2 className="h-5 w-5 md:h-6 md:w-6 text-emerald-400 animate-in zoom-in" />}
                           </div>
-                          <h3 className="text-2xl font-serif mb-2">Invitation Website</h3>
-                          <p className={`text-sm leading-relaxed ${format === 'website' ? 'text-white/60' : 'text-neutral-500'}`}>
+                          <h3 className="text-xl md:text-2xl font-serif mb-2">Invitation Website</h3>
+                          <p className={`text-xs md:text-sm leading-relaxed ${format === 'website' ? 'text-white/60' : 'text-neutral-500'}`}>
                             A high-end, responsive website with RSVPs, dynamic maps, countdowns, and galleries. Perfect for modern weddings.
                           </p>
-                          {format !== 'website' && <div className="absolute right-8 bottom-8 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0 transition-transform"><ArrowRight className="h-6 w-6" /></div>}
+                          {format !== 'website' && <div className="absolute right-6 md:right-8 bottom-6 md:bottom-8 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0 transition-transform"><ArrowRight className="h-5 w-5 md:h-6 md:w-6" /></div>}
                         </button>
 
                         <button
                           onClick={() => setFormat('card')}
-                          className={`group p-8 rounded-[2rem] border-2 transition-all duration-500 text-left relative overflow-hidden ${format === 'card' ? 'border-black bg-black text-white shadow-2xl scale-[1.02]' : 'border-neutral-100 bg-neutral-50 hover:border-neutral-300'}`}
+                          className={`group p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border-2 transition-all duration-500 text-left relative overflow-hidden ${format === 'card' ? 'border-black bg-black text-white shadow-2xl scale-[1.02]' : 'border-neutral-100 bg-neutral-50 hover:border-neutral-300'}`}
                         >
                           <div className="flex items-start justify-between mb-4">
-                            <div className={`p-4 rounded-2xl transition-colors ${format === 'card' ? 'bg-white/10' : 'bg-white shadow-sm text-neutral-400'}`}>
-                              <Smartphone className="h-8 w-8" />
+                            <div className={`p-3 md:p-4 rounded-xl md:rounded-2xl transition-colors ${format === 'card' ? 'bg-white/10' : 'bg-white shadow-sm text-neutral-400'}`}>
+                              <Smartphone className="h-6 w-6 md:h-8 md:w-8" />
                             </div>
-                            {format === 'card' && <CheckCircle2 className="h-6 w-6 text-emerald-400 animate-in zoom-in" />}
+                            {format === 'card' && <CheckCircle2 className="h-5 w-5 md:h-6 md:w-6 text-emerald-400 animate-in zoom-in" />}
                           </div>
-                          <h3 className="text-2xl font-serif mb-2">Digital Invitation Card</h3>
-                          <p className={`text-sm leading-relaxed ${format === 'card' ? 'text-white/60' : 'text-neutral-500'}`}>
+                          <h3 className="text-xl md:text-2xl font-serif mb-2">Digital Invitation Card</h3>
+                          <p className={`text-xs md:text-sm leading-relaxed ${format === 'card' ? 'text-white/60' : 'text-neutral-500'}`}>
                             An elegant single-view digital card designed for easy sharing via WhatsApp or social media.
                           </p>
-                          {format !== 'card' && <div className="absolute right-8 bottom-8 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0 transition-transform"><ArrowRight className="h-6 w-6" /></div>}
+                          {format !== 'card' && <div className="absolute right-6 md:right-8 bottom-6 md:bottom-8 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0 transition-transform"><ArrowRight className="h-5 w-5 md:h-6 md:w-6" /></div>}
                         </button>
                       </div>
                     </motion.div>
@@ -416,7 +423,7 @@ export default function CreateInvitation() {
                             <div className="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-10 shadow-sm border border-emerald-100">
                               <CheckCircle2 className="h-10 w-10" />
                             </div>
-                            <h2 className="text-4xl md:text-[5rem] font-serif tracking-tight leading-tight text-neutral-900">
+                            <h2 className="text-3xl md:text-[5rem] font-serif tracking-tight leading-tight text-neutral-900">
                               It's Live. Your Story Begins.
                             </h2>
                             <p className="text-xl md:text-2xl text-neutral-500 max-w-2xl mx-auto leading-relaxed font-light">
@@ -433,68 +440,81 @@ export default function CreateInvitation() {
                               </div>
                             </div>
                             <div className="flex gap-4 w-full md:w-auto shrink-0">
-                                <Button
-                                  onClick={copyToClipboard}
-                                  variant="ghost"
-                                  className={`rounded-full h-20 px-12 transition-all duration-500 text-lg border-2 ${isCopying ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-black hover:bg-black hover:text-white'}`}
-                                >
-                                  {isCopying ? <><Check className="mr-3 h-5 w-5" /> Copied</> : <><Copy className="mr-3 h-5 w-5" /> Copy URL</>}
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  className="rounded-full h-20 w-20 px-0 hover:bg-neutral-50 border-2 border-neutral-200"
-                                  onClick={() => window.open(`/invite/${publishedSlug}`, '_blank')}
-                                >
-                                  <Eye className="h-7 w-7" />
-                                </Button>
+                              <Button
+                                onClick={copyToClipboard}
+                                variant="ghost"
+                                className={`rounded-full h-14 md:h-20 px-6 md:px-10 transition-all duration-500 text-sm md:text-lg border-2 ${isCopying ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-black hover:bg-black hover:text-white'}`}
+                              >
+                                {isCopying ? <><Check className="mr-2 md:mr-3 h-4 w-4 md:h-5 md:w-5" /> Copied</> : <><Copy className="mr-2 md:mr-3 h-4 w-4 md:h-5 md:w-5" /> Copy URL</>}
+                              </Button>
+                              <Button
+                                variant="outline"
+                                className="rounded-full h-14 w-14 md:h-20 md:w-20 px-0 hover:bg-neutral-50 border-2 border-neutral-200"
+                                onClick={() => window.open(`/invite/${publishedSlug}`, '_blank')}
+                              >
+                                <Eye className="h-5 w-5 md:h-7 md:w-7" />
+                              </Button>
                             </div>
                           </div>
 
                           {/* Quick Stats Grid */}
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 max-w-4xl mx-auto">
-                             {[
-                               { icon: <Zap className="h-6 w-6 text-amber-500" />, label: "Edge Deployment", desc: "Instant global delivery" },
-                               { icon: <Sparkles className="h-6 w-6 text-purple-500" />, label: "Premium Hosting", desc: "Always available" },
-                               { icon: <Globe className="h-6 w-6 text-blue-500" />, label: "Public SEO", desc: "Easily discoverable" }
-                             ].map((item, idx) => (
-                               <div key={idx} className="space-y-4">
-                                 <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center border border-neutral-100">
-                                   {item.icon}
-                                 </div>
-                                 <div className="space-y-1">
-                                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">{item.label}</p>
-                                   <p className="text-sm text-neutral-600 italic">{item.desc}</p>
-                                 </div>
-                               </div>
-                             ))}
+                            {[
+                              { icon: <Zap className="h-6 w-6 text-amber-500" />, label: "Edge Deployment", desc: "Instant global delivery" },
+                              { icon: <Sparkles className="h-6 w-6 text-purple-500" />, label: "Premium Hosting", desc: "Always available" },
+                              { icon: <Globe className="h-6 w-6 text-blue-500" />, label: "Public SEO", desc: "Easily discoverable" }
+                            ].map((item, idx) => (
+                              <div key={idx} className="space-y-4">
+                                <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center border border-neutral-100">
+                                  {item.icon}
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">{item.label}</p>
+                                  <p className="text-sm text-neutral-600 italic">{item.desc}</p>
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       ) : (
-                        <div className="w-full space-y-32 animate-in fade-in duration-1000">
+                        <div className="w-full space-y-16 md:space-y-24 animate-in fade-in duration-1000">
                           {/* Hero Landing Section */}
-                          <section className="text-center pt-20 pb-12">
+                          <section className="text-center pt-12 md:pt-20 pb-6 md:pb-12 relative">
+                            {/* Subtle Back Button */}
+                            <motion.button
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              onClick={prevStep}
+                              className="absolute top-0 left-0 flex items-center gap-2 text-neutral-400 hover:text-black transition-colors text-xs uppercase tracking-widest font-bold group"
+                            >
+                              <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                              Back to Design
+                            </motion.button>
+
                             <div className="w-20 h-20 bg-neutral-900 text-white rounded-full flex items-center justify-center mx-auto mb-12 shadow-2xl">
                               <Sparkles className="h-8 w-8 text-amber-400" />
                             </div>
-                            <h2 className="text-5xl md:text-[6rem] font-serif leading-tight tracking-tighter text-neutral-900 mb-12">
+                            <h2 className="text-4xl md:text-[6rem] font-serif leading-tight tracking-tighter text-neutral-900 mb-8 md:mb-12">
                               Masterpiece In Progress
                             </h2>
                             <p className="text-xl md:text-3xl text-neutral-500 max-w-3xl mx-auto leading-relaxed font-light mb-16">
                               Your {format === 'website' ? 'digital sanctuary' : 'invitation artifact'} is ready for the final reveal. Experience your vision in full-screen clarity.
                             </p>
-                            
-                            <Button
-                              size="lg"
-                              onClick={handlePreview}
-                              className="h-24 px-16 rounded-full bg-black text-white hover:bg-neutral-800 text-2xl shadow-2xl group transition-all duration-500 w-full md:w-auto"
-                            >
-                              Launch Cinematic Preview
-                              <ExternalLink className="ml-4 h-6 w-6 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
-                            </Button>
+
+                            <div className="pt-4 md:pt-6 flex justify-center">
+                              <Button
+                                size="lg"
+                                onClick={handlePreview}
+                                className="h-16 md:h-24 px-10 md:px-14 rounded-full bg-black text-white hover:bg-neutral-800 text-lg md:text-2xl shadow-2xl group transition-all duration-500 w-fit"
+                              >
+                                Launch Cinematic Preview
+                                <ExternalLink className="ml-3 md:ml-4 h-5 w-5 md:h-6 md:w-6 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+                              </Button>
+                            </div>
                           </section>
 
                           {/* Attribute Highlights Section - No containers, just spacing */}
-                          <div className="max-w-6xl mx-auto border-t border-neutral-100 pt-24">
+                          <div className="max-w-6xl mx-auto border-t border-neutral-100 pt-12 md:pt-24">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-24">
                               <div className="space-y-8 group">
                                 <div className="flex items-center gap-6">
@@ -502,8 +522,8 @@ export default function CreateInvitation() {
                                     <img src={templates.find(t => t.id === formData.template)?.img} className="w-full h-full object-cover" alt="" />
                                   </div>
                                   <div>
-                                    <p className="text-[10px] uppercase font-black tracking-[0.4em] text-neutral-400 mb-1">Aesthetic Collection</p>
-                                    <h4 className="text-4xl font-serif capitalize text-neutral-900">{formData.template}</h4>
+                                    <p className="text-[9px] md:text-[10px] uppercase font-black tracking-[0.4em] text-neutral-400 mb-1">Aesthetic Collection</p>
+                                    <h4 className="text-2xl md:text-4xl font-serif capitalize text-neutral-900">{formData.template}</h4>
                                   </div>
                                 </div>
                                 <p className="text-lg text-neutral-500 leading-relaxed max-w-md">
@@ -517,13 +537,13 @@ export default function CreateInvitation() {
                                     {format === 'website' ? <Globe className="h-8 w-8" /> : <Smartphone className="h-8 w-8" />}
                                   </div>
                                   <div>
-                                    <p className="text-[10px] uppercase font-black tracking-[0.4em] text-neutral-400 mb-1">Delivery Protocol</p>
-                                    <h4 className="text-4xl font-serif text-neutral-900">{format === 'website' ? 'Interactive Website' : 'Digital Card'}</h4>
+                                    <p className="text-[9px] md:text-[10px] uppercase font-black tracking-[0.4em] text-neutral-400 mb-1">Delivery Protocol</p>
+                                    <h4 className="text-2xl md:text-4xl font-serif text-neutral-900">{format === 'website' ? 'Interactive Website' : 'Digital Card'}</h4>
                                   </div>
                                 </div>
                                 <p className="text-lg text-neutral-500 leading-relaxed max-w-md">
-                                  {format === 'website' 
-                                    ? "A full-scale digital ecosystem including RSVP tracking and dynamic mapping." 
+                                  {format === 'website'
+                                    ? "A full-scale digital ecosystem including RSVP tracking and dynamic mapping."
                                     : "An elegant, high-impact digital artifact designed for seamless social sharing."}
                                 </p>
                               </div>
@@ -531,55 +551,32 @@ export default function CreateInvitation() {
                           </div>
 
                           {/* Premium Banner Section - Like the Templates page Feature Banner */}
-                          <div className="pt-20">
-                            <div className="relative rounded-[3.5rem] overflow-hidden text-center text-white min-h-[500px] flex items-center justify-center shadow-2xl py-20 px-8">
-                                <img src="/images/88.jpg" className="absolute inset-0 w-full h-full object-cover" alt="" />
-                                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+                          <div className="pt-12 md:pt-16">
+                            <div className="relative rounded-3xl md:rounded-[3.5rem] overflow-hidden text-center text-white min-h-[320px] md:min-h-[500px] flex items-center justify-center py-12 md:py-20 px-6 md:px-8">
+                              <img src="/images/88.jpg" className="absolute inset-0 w-full h-full object-cover" alt="" />
+                              <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
-                                <div className="relative z-10 max-w-3xl mx-auto space-y-8">
-                                  <div className="flex justify-center gap-4">
-                                    <Badge variant="outline" className="text-[11px] border-white/20 text-white/80 bg-white/5 backdrop-blur-md px-4 py-1 uppercase tracking-widest">Premium Offering</Badge>
-                                    <Badge variant="secondary" className="text-[11px] bg-amber-500 text-white border-none px-4 py-1 uppercase tracking-widest">Limited Edition</Badge>
-                                  </div>
-                                  <h3 className="text-4xl md:text-6xl font-serif leading-tight tracking-tight">Claim Your Forever Domain</h3>
-                                  <p className="text-white/70 text-xl leading-relaxed font-light italic">
-                                    "Unlock a bespoke domain, permanent cloud hosting, and an encrypted guest management portal. Your love deserves a permanent address."
-                                  </p>
-                                  <div className="pt-6">
-                                    <Button disabled className="h-20 px-12 rounded-full bg-white text-black hover:bg-neutral-100 text-xl transition-all font-serif">
-                                      Unlock Perpetual Access <span className="text-neutral-400 mx-3">—</span> Coming Soon
-                                    </Button>
-                                  </div>
+                              <div className="relative z-10 max-w-3xl mx-auto space-y-8">
+                                <div className="flex justify-center gap-4">
+                                  <Badge variant="outline" className="text-[11px] border-white/20 text-white/80 bg-white/5 backdrop-blur-md px-4 py-1 uppercase tracking-widest">Premium Offering</Badge>
+                                  <Badge variant="secondary" className="text-[11px] bg-amber-500 text-white border-none px-4 py-1 uppercase tracking-widest">Limited Edition</Badge>
                                 </div>
+                                <h3 className="text-3xl md:text-6xl font-serif leading-tight tracking-tight">The Moment has Arrived.</h3>
+                                <p className="text-white/70 text-base md:text-xl leading-relaxed font-light italic">
+                                  "Your vision is complete. It's time to share your story with the world and let the celebration begin."
+                                </p>
+                                <div className="pt-4 md:pt-6 flex justify-center">
+                                  <Button 
+                                    onClick={publishInvitation}
+                                    disabled={isPublishing}
+                                    className="h-16 md:h-22 px-10 md:px-16 rounded-full bg-white text-black hover:bg-neutral-100 text-lg md:text-2xl transition-all font-serif shadow-2xl group flex items-center gap-4"
+                                  >
+                                    {isPublishing ? 'Creating Sanctuary...' : 'Publish My Masterpiece'}
+                                    {!isPublishing && <Sparkles className="h-5 w-5 md:h-6 md:w-6 text-amber-500 animate-pulse" />}
+                                  </Button>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-
-                          {/* Floating Glassmorphic Action Bar */}
-                          <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4 p-3 pr-4 rounded-full bg-white/70 backdrop-blur-3xl border border-white/50 shadow-[0_30px_70px_rgba(0,0,0,0.25)] animate-in slide-in-from-bottom-12 duration-700">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="rounded-full w-14 h-14 bg-neutral-100/50 hover:bg-neutral-200 text-black"
-                              onClick={prevStep}
-                            >
-                              <ArrowLeft className="h-5 w-5" />
-                            </Button>
-
-                            <div className="h-8 w-[1px] bg-neutral-200/50 mx-2" />
-
-                            <div className="hidden md:block px-8">
-                              <p className="text-[10px] uppercase font-black tracking-[0.3em] text-neutral-400 leading-none mb-1">Final Approval</p>
-                              <p className="text-sm font-bold text-neutral-800 leading-none">Ready to go?</p>
-                            </div>
-
-                            <Button
-                              size="lg"
-                              onClick={publishInvitation}
-                              className="h-14 px-12 rounded-full bg-black text-white hover:bg-neutral-800 text-md shadow-2xl group transition-all duration-500"
-                            >
-                              Publish My Invitation
-                              <ArrowRight className="ml-3 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                            </Button>
                           </div>
                         </div>
                       )}
@@ -629,6 +626,8 @@ export default function CreateInvitation() {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }
