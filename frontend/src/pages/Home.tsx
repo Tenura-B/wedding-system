@@ -59,7 +59,7 @@ export default function Home() {
           variants={heroVariants}
           initial="hidden"
           animate="visible"
-          className="relative z-10 container mx-auto px-6 text-center"
+          className="relative z-10 container mx-auto px-6 md:px-12 text-center"
         >
           <motion.h1 
             variants={itemVariants}
@@ -91,7 +91,7 @@ export default function Home() {
       </section>
 
       {/* 🧩 SECTION 1: FEATURED TEMPLATES */}
-      <section className="py-32 px-6 bg-white overflow-hidden relative">
+      <section className="py-32 px-6 md:px-12 bg-white overflow-hidden relative">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
         
         <div className="container mx-auto relative z-10">
@@ -153,7 +153,7 @@ export default function Home() {
       </section>
 
       {/* 🧩 SECTION 2: HOW IT WORKS */}
-      <section className="py-32 px-6 bg-cream border-y border-gold/10">
+      <section className="py-32 px-6 md:px-12 bg-cream border-y border-gold/10">
         <div className="container mx-auto">
           <div className="text-center mb-24">
             <span className="text-gold text-[16px] tracking-[4px] uppercase font-bold mb-4 block">Atelier Process</span>
@@ -190,7 +190,7 @@ export default function Home() {
       </section>
 
       {/* 🧩 SECTION 3: VENDOR SHOWCASE */}
-      <section className="py-32 px-6 bg-white overflow-hidden">
+      <section className="py-32 px-6 md:px-12 bg-white overflow-hidden">
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-16 md:mb-20 gap-8 text-center md:text-left">
             <div className="max-w-2xl px-4">

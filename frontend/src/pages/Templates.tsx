@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { motion } from "motion/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Search, Filter, Eye } from "lucide-react";
+import { Search, Filter, Eye, ArrowRight } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Badge } from "@/components/ui/badge";
@@ -41,26 +42,71 @@ const templates = [
   }
 ];
 
+export const templateDemoData: Record<string, any> = {
+  classic: {
+    brideName: "Amelia Thorne",
+    groomName: "Jameson Grey",
+    date: "2026-06-12",
+    time: "16:00",
+    venueName: "The Grand Rose Estate",
+    address: "123 Lavender Lane, Napa Valley, CA 94558",
+    message: "We are joyfully announcing our marriage and would be honored if you could join us for this special celebration of love and commitment.",
+    template: "classic"
+  },
+  minimal: {
+    brideName: "Sarah",
+    groomName: "Michael",
+    date: "2026-09-18",
+    time: "15:00",
+    venueName: "The Modern Art Gallery",
+    address: "450 Abstract Avenue, New York, NY 10012",
+    message: "Join us as we celebrate our love.",
+    template: "minimal"
+  },
+  floral: {
+    brideName: "Lily Evans",
+    groomName: "Jack Thompson",
+    date: "2026-05-24",
+    time: "14:30",
+    venueName: "Botanical Gardens",
+    address: "88 Floral Way, Springville, FL 32004",
+    message: "Surrounded by nature and the people we love, we will be exchanging our vows.",
+    template: "floral"
+  },
+  luxury: {
+    brideName: "Victoria",
+    groomName: "Sebastian",
+    date: "2026-11-05",
+    time: "19:00",
+    venueName: "The Obsidian Palace",
+    address: "1 Royal Boulevard, Paris",
+    message: "Request the honor of your presence at their black-tie wedding celebration.",
+    template: "luxury"
+  }
+};
+
 export default function Templates() {
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
       <Navbar />
       
       <main className="flex-grow pt-24 pb-16">
-        <header className="py-16 bg-white border-b border-neutral-100 relative overflow-hidden">
-          <div className="container mx-auto px-4 text-center relative z-10">
+        <header className="py-16 px-6 md:px-12 bg-white border-b border-neutral-100 relative overflow-hidden">
+          <div className="container mx-auto relative z-10">
             <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-serif mb-6 px-2"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="text-4xl md:text-7xl font-serif mb-6"
             >
               Exquisite Templates
             </motion.h1>
             <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg px-4"
+              className="text-muted-foreground max-w-2xl text-base md:text-xl font-light leading-relaxed"
             >
               Every wedding is a unique story. Find the perfect design to announce your celebration of love.
             </motion.p>
@@ -69,14 +115,15 @@ export default function Templates() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-gold/5 blur-3xl rounded-full -translate-y-1/2 translate-x-1/2" />
         </header>
 
-        <section className="container mx-auto px-4 py-12">
+        <section className="px-6 md:px-12 py-12">
+          <div className="container mx-auto">
           {/* Filters - Simplified for Demo */}
-          <div className="flex flex-col sm:flex-row justify-between items-center mb-12 gap-6">
-            <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-              <Button variant="outline" className="rounded-full px-6 border-black hover:bg-black hover:text-white transition-all">All Styles</Button>
-              <Button variant="ghost" className="rounded-full px-6 text-neutral-600 border border-transparent hover:border-black transition-all">Minimal</Button>
-              <Button variant="ghost" className="rounded-full px-6 text-neutral-600 border border-transparent hover:border-black transition-all">Classic</Button>
-              <Button variant="ghost" className="rounded-full px-6 text-neutral-600 border border-transparent hover:border-black transition-all">Floral</Button>
+          <div className="flex flex-col sm:flex-row justify-between items-start mb-12 gap-8">
+            <div className="flex flex-wrap gap-3">
+              <Button variant="outline" className="rounded-full px-8 py-6 border-black bg-black text-white shadow-xl">All Styles</Button>
+              <Button variant="ghost" className="rounded-full px-8 py-6 text-neutral-500 hover:text-black transition-all">Minimal</Button>
+              <Button variant="ghost" className="rounded-full px-8 py-6 text-neutral-500 hover:text-black transition-all">Classic</Button>
+              <Button variant="ghost" className="rounded-full px-8 py-6 text-neutral-500 hover:text-black transition-all">Floral</Button>
             </div>
             <div className="relative w-full sm:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -105,7 +152,12 @@ export default function Templates() {
                   />
                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-90 group-hover:scale-100">
-                    <Button variant="secondary" size="lg" className="rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30 px-8 shadow-lg transition-all">
+                    <Button 
+                      variant="secondary" 
+                      size="lg" 
+                      onClick={() => window.open(`/preview/${template.id}`, '_blank')}
+                      className="rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30 px-8 shadow-lg transition-all"
+                    >
                       <Eye className="mr-2 h-4 w-4" />
                       Live Preview
                     </Button>
@@ -133,10 +185,12 @@ export default function Templates() {
               </motion.div>
             ))}
           </div>
+          </div>
         </section>
 
         {/* Feature Banner */}
-        <section className="container mx-auto px-4 py-16 overflow-hidden">
+        <section className="px-6 md:px-12 py-16 overflow-hidden">
+          <div className="container mx-auto">
           <div className="relative rounded-[2.5rem] md:rounded-[3rem] overflow-hidden text-center text-white min-h-[400px] md:h-[450px] flex items-center justify-center shadow-2xl py-12 md:py-0">
               {/* Background Image */}
               <img 
@@ -157,6 +211,7 @@ export default function Templates() {
              {/* Decorative blobs */}
              <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 blur-3xl -translate-y-1/2 translate-x-1/2 rounded-full" />
              <div className="absolute bottom-0 left-0 w-64 h-64 bg-rose-500/10 blur-3xl translate-y-1/2 -translate-x-1/2 rounded-full" />
+          </div>
           </div>
         </section>
       </main>

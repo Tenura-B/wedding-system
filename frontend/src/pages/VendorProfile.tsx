@@ -1,12 +1,50 @@
+import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Star, Heart, MapPin, Phone, Mail, Globe, ArrowLeft, Camera, Check } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function VendorProfile() {
    const { id } = useParams();
+   const [isModalOpen, setIsModalOpen] = useState(false);
+   const [isSubmitted, setIsSubmitted] = useState(false);
+   const [leadData, setLeadData] = useState({
+      name: "",
+      email: "",
+      date: "",
+      message: ""
+   });
+
+   const handleBookingSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      const existingLeads = JSON.parse(localStorage.getItem(`vendor-leads`) || "[]");
+      const newLead = { 
+         ...leadData, 
+         vendorId: id, 
+         vendorName: vendor.name, 
+         id: Date.now() 
+      };
+      localStorage.setItem(`vendor-leads`, JSON.stringify([...existingLeads, newLead]));
+      setIsSubmitted(true);
+      setTimeout(() => {
+         setIsModalOpen(false);
+         setIsSubmitted(false);
+         setLeadData({ name: "", email: "", date: "", message: "" });
+      }, 3000);
+   };
 
    // Data for demo
    const vendor = {
@@ -71,7 +109,11 @@ export default function VendorProfile() {
                         </div>
 
                         <div className="flex gap-4">
-                           <Button size="lg" className="rounded-full bg-white text-black hover:bg-neutral-100 flex-grow sm:flex-grow-0 px-8 h-14">
+                           <Button 
+                              size="lg" 
+                              className="rounded-full bg-white text-black hover:bg-neutral-100 flex-grow sm:flex-grow-0 px-8 h-14"
+                              onClick={() => setIsModalOpen(true)}
+                           >
                               Book Consultation
                            </Button>
                            <Button size="icon" variant="outline" className="rounded-full w-14 h-14 border-white/20 text-white hover:bg-white/10 backdrop-blur-md">
@@ -150,6 +192,87 @@ export default function VendorProfile() {
          </main>
 
          <Footer />
+
+         {/* Booking Modal */}
+         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <DialogContent className="sm:max-w-md bg-white rounded-[2.5rem] border-none p-0 overflow-hidden shadow-2xl">
+               <div className="p-8 md:p-10">
+                  <DialogHeader className="mb-8">
+                     <DialogTitle className="text-3xl font-serif">Request a Consultation</DialogTitle>
+                     <DialogDescription className="text-muted-foreground mt-2">
+                        Get in touch with {vendor.name} to discuss your wedding vision.
+                     </DialogDescription>
+                  </DialogHeader>
+
+                  {isSubmitted ? (
+                     <motion.div 
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="py-12 text-center space-y-4"
+                     >
+                        <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                           <Check className="h-8 w-8" />
+                        </div>
+                        <h3 className="text-2xl font-serif">Request Sent</h3>
+                        <p className="text-muted-foreground">The vendor will get back to you shortly.</p>
+                     </motion.div>
+                  ) : (
+                     <form onSubmit={handleBookingSubmit} className="space-y-6">
+                        <div className="space-y-4">
+                           <div className="space-y-2">
+                              <Label htmlFor="lead-name">Full Name</Label>
+                              <Input 
+                                 id="lead-name" 
+                                 required 
+                                 placeholder="e.g. Katherine Pierce" 
+                                 className="h-12 rounded-xl"
+                                 value={leadData.name}
+                                 onChange={(e) => setLeadData(prev => ({ ...prev, name: e.target.value }))}
+                              />
+                           </div>
+                           <div className="space-y-2">
+                              <Label htmlFor="lead-email">Email Address</Label>
+                              <Input 
+                                 id="lead-email" 
+                                 type="email" 
+                                 required 
+                                 placeholder="katherine@example.com"
+                                 className="h-12 rounded-xl"
+                                 value={leadData.email}
+                                 onChange={(e) => setLeadData(prev => ({ ...prev, email: e.target.value }))}
+                              />
+                           </div>
+                           <div className="space-y-2">
+                              <Label htmlFor="lead-date">Desired Wedding Date</Label>
+                              <Input 
+                                 id="lead-date" 
+                                 type="date" 
+                                 className="h-12 rounded-xl"
+                                 value={leadData.date}
+                                 onChange={(e) => setLeadData(prev => ({ ...prev, date: e.target.value }))}
+                              />
+                           </div>
+                           <div className="space-y-2">
+                              <Label htmlFor="lead-message">Tell us about your wedding</Label>
+                              <Textarea 
+                                 id="lead-message" 
+                                 placeholder="Share any special requests or details..." 
+                                 className="min-h-[100px] rounded-xl"
+                                 value={leadData.message}
+                                 onChange={(e) => setLeadData(prev => ({ ...prev, message: e.target.value }))}
+                              />
+                           </div>
+                        </div>
+                        <DialogFooter className="mt-8">
+                           <Button type="submit" size="lg" className="w-full bg-black text-white hover:bg-neutral-800 rounded-xl h-14 shadow-xl">
+                              Send Request
+                           </Button>
+                        </DialogFooter>
+                     </form>
+                  )}
+               </div>
+            </DialogContent>
+         </Dialog>
       </div>
    );
 }

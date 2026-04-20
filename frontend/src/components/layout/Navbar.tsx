@@ -5,7 +5,11 @@ import { Heart, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import AuthModal from "../auth/AuthModal";
 
-export default function Navbar() {
+interface NavbarProps {
+  isDark?: boolean;
+}
+
+export default function Navbar({ isDark }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -25,21 +29,21 @@ export default function Navbar() {
     { name: "Journal", href: "#" },
   ];
 
-  const navbarClasses = `fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 py-6 ${
+  const navbarClasses = `fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 md:px-12 py-5 md:py-6 ${
     isScrolled 
-      ? "bg-white/60 backdrop-blur-xl border-b border-white/40 shadow-sm" 
+      ? (isDark ? "bg-black/80 backdrop-blur-2xl border-b border-white/10 shadow-sm" : "bg-white/80 backdrop-blur-2xl border-b border-white/40 shadow-sm")
       : "bg-transparent"
   }`;
 
   const linkClasses = (href: string) => `text-[16px] uppercase tracking-[2px] font-medium transition-all hover:text-gold ${
-    location.pathname === href ? "text-gold" : "text-ink"
+    location.pathname === href ? "text-gold" : (isDark ? "text-white" : "text-ink")
   }`;
 
   return (
     <nav className={navbarClasses}>
       <div className="container mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
-          <span className="text-2xl font-serif tracking-[4px] uppercase text-ink font-light">
+          <span className={`text-2xl font-serif tracking-[4px] uppercase font-light transition-colors ${isDark ? 'text-white' : 'text-ink'}`}>
             Ethereal
           </span>
         </Link>
@@ -62,7 +66,7 @@ export default function Navbar() {
 
         {/* Mobile Menu Toggle */}
         <button 
-          className="md:hidden p-2 text-ink"
+          className={`md:hidden p-2 ${isDark ? 'text-white' : 'text-ink'}`}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}

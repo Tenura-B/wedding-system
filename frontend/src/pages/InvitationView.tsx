@@ -1,16 +1,30 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Clock, Heart, Share2, Map as MapIcon } from "lucide-react";
+import { Calendar, MapPin, Clock, Heart, Share2, Map as MapIcon, ExternalLink, ChevronRight, Check, Gift } from "lucide-react";
 import { format, parseISO, intervalToDuration } from "date-fns";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
-export default function InvitationView() {
+interface InvitationViewProps {
+  previewData?: any;
+}
+
+export default function InvitationView({ previewData }: InvitationViewProps) {
   const { slug } = useParams();
   const [data, setData] = useState<any>(null);
   const [timeLeft, setTimeLeft] = useState<any>(null);
+  const [rsvpData, setRsvpData] = useState({ name: "", status: "coming", guests: 1, message: "" });
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
+    if (previewData) {
+      setData(previewData);
+      return;
+    }
+    
     const saved = localStorage.getItem(`wedding-${slug}`);
     if (saved) {
       setData(JSON.parse(saved));
@@ -27,26 +41,39 @@ export default function InvitationView() {
         template: "classic"
       });
     }
-  }, [slug]);
+  }, [slug, previewData]);
 
   useEffect(() => {
     if (!data?.date) return;
     
-    const targetDate = parseISO(`${data.date}T${data.time || '00:00'}:00`);
-    
-    const timer = setInterval(() => {
-      const now = new Date();
-      if (now >= targetDate) {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        return;
-      }
+    try {
+      const targetDate = parseISO(`${data.date}T${data.time || '00:00'}:00`);
+      if (isNaN(targetDate.getTime())) return;
       
-      const duration = intervalToDuration({ start: now, end: targetDate });
-      setTimeLeft(duration);
-    }, 1000);
+      const timer = setInterval(() => {
+        const now = new Date();
+        if (now >= targetDate) {
+          setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+          return;
+        }
+        
+        const duration = intervalToDuration({ start: now, end: targetDate });
+        setTimeLeft(duration);
+      }, 1000);
 
-    return () => clearInterval(timer);
+      return () => clearInterval(timer);
+    } catch (error) {
+      console.error("Error setting up countdown:", error);
+    }
   }, [data]);
+
+  const handleRSVP = (e: React.FormEvent) => {
+    e.preventDefault();
+    const existingRSVPs = JSON.parse(localStorage.getItem(`wedding-rsvps-${slug}`) || "[]");
+    const updatedRSVPs = [...existingRSVPs, { ...rsvpData, id: Date.now() }];
+    localStorage.setItem(`wedding-rsvps-${slug}`, JSON.stringify(updatedRSVPs));
+    setIsSubmitted(true);
+  };
 
   if (!data) return null;
 
@@ -85,11 +112,11 @@ export default function InvitationView() {
             className={`flex flex-col md:flex-row items-center justify-center gap-4 md:gap-12 ${isMinimal ? 'font-sans text-center' : 'font-serif text-center md:text-left'}`}
           >
             <h1 className="text-5xl md:text-8xl lg:text-9xl tracking-tight break-words px-4">
-              {data.brideName.split(' ')[0]}
+              {data.brideName ? data.brideName.split(' ')[0] : 'Bride'}
             </h1>
             <Heart className={`h-8 w-8 md:h-12 md:w-12 ${isDark ? 'text-amber-500' : 'text-rose-400'} animate-pulse`} />
             <h1 className="text-5xl md:text-8xl lg:text-9xl tracking-tight break-words px-4">
-              {data.groomName.split(' ')[0]}
+              {data.groomName ? data.groomName.split(' ')[0] : 'Groom'}
             </h1>
           </motion.div>
           
@@ -122,7 +149,7 @@ export default function InvitationView() {
               </div>
               <h3 className="text-sm uppercase font-bold tracking-[0.2em] text-muted-foreground">The Date</h3>
               <p className="text-2xl font-serif">
-                {format(parseISO(data.date), 'MMMM d, yyyy')}
+                {data.date ? format(parseISO(data.date), 'MMMM d, yyyy') : 'Date to be announced'}
               </p>
             </div>
             
@@ -144,7 +171,19 @@ export default function InvitationView() {
               <p className="text-2xl font-serif leading-tight">
                 {data.venueName}
               </p>
-              <p className="text-sm text-muted-foreground">{data.address}</p>
+              <p className="text-sm text-muted-foreground mb-4">{data.address}</p>
+              
+              <div className="rounded-2xl overflow-hidden h-48 w-full border border-neutral-200">
+                <iframe 
+                  width="100%" 
+                  height="100%" 
+                  frameBorder="0" 
+                  scrolling="no" 
+                  marginHeight={0} 
+                  marginWidth={0} 
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(data.address)}&t=&z=13&ie=UTF8&iwloc=B&output=embed`}
+                ></iframe>
+              </div>
             </div>
           </div>
         </div>
@@ -194,19 +233,131 @@ export default function InvitationView() {
         </div>
       </section>
 
-      {/* RSVP Section in place of footer */}
-      <section className={`py-32 px-4 text-center border-t ${isDark ? 'border-neutral-800' : 'border-neutral-100'}`}>
-        <div className="max-w-xl mx-auto space-y-8">
-          <h2 className="text-4xl md:text-5xl font-serif">Are You Joining Us?</h2>
-          <p className="text-muted-foreground">Please let us know by October 24th, 2026</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="rounded-full px-12 bg-black text-white hover:bg-neutral-800 h-14 text-lg">
-              I'm Coming
-            </Button>
-            <Button variant="outline" size="lg" className="rounded-full px-12 border-neutral-300 h-14 text-lg">
-              Regretfully Decline
-            </Button>
+      {/* Registry Section */}
+      {data.registries && data.registries.length > 0 && (
+        <section className={`py-24 ${isDark ? 'bg-neutral-900 shadow-inner' : 'bg-neutral-50'}`}>
+          <div className="container mx-auto px-4 max-w-4xl">
+             <div className="text-center mb-12">
+               <span className={`text-[16px] tracking-[0.4em] uppercase font-bold opacity-60 mb-4 block`}>Curation of Love</span>
+               <h2 className="text-4xl md:text-5xl font-serif">Gift Registry</h2>
+             </div>
+             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+               {data.registries.map((reg: any, i: number) => (
+                 <a 
+                   key={i} 
+                   href={reg.url} 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   className={`group flex items-center justify-between p-6 rounded-[2rem] border transition-all duration-500 ${isDark ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-neutral-100 hover:shadow-xl'}`}
+                 >
+                   <div className="flex items-center gap-4">
+                     <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isDark ? 'bg-amber-500/20 text-amber-500' : 'bg-neutral-100 text-neutral-900 group-hover:bg-black group-hover:text-white transition-colors'}`}>
+                       <Gift className="h-6 w-6" />
+                     </div>
+                     <span className="font-serif text-xl">{reg.name}</span>
+                   </div>
+                   <ExternalLink className="h-5 w-5 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                 </a>
+               ))}
+             </div>
           </div>
+        </section>
+      )}
+
+      {/* RSVP Section in place of footer */}
+      <section className={`py-32 px-4 transition-all duration-1000 border-t ${isDark ? 'border-neutral-800' : 'border-neutral-100'}`}>
+        <div className="max-w-2xl mx-auto">
+          {isSubmitted ? (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center space-y-6 py-12"
+            >
+              <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6 ${isDark ? 'bg-amber-500/10 text-amber-500' : 'bg-black text-white'}`}>
+                <Check className="h-10 w-10" />
+              </div>
+              <h2 className="text-4xl md:text-5xl font-serif">Thank You</h2>
+              <p className="text-xl text-muted-foreground">Your response has been saved. We can't wait to see you!</p>
+              <Button 
+                variant="outline" 
+                className="rounded-full px-8"
+                onClick={() => setIsSubmitted(false)}
+              >
+                Update Response
+              </Button>
+            </motion.div>
+          ) : (
+            <div className="space-y-12">
+              <div className="text-center space-y-4">
+                <h2 className="text-4xl md:text-5xl font-serif">Are You Joining Us?</h2>
+                <p className="text-muted-foreground">Please respond by the 14th of September, 2026</p>
+              </div>
+
+              <form onSubmit={handleRSVP} className="bg-white/5 p-8 md:p-12 rounded-[3rem] border border-white/10 space-y-8 backdrop-blur-sm">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                    <Label htmlFor="name" className="text-base uppercase tracking-widest opacity-60 ml-1">Full Name</Label>
+                    <Input 
+                      id="name" 
+                      required 
+                      placeholder="e.g. Elena Gilbert"
+                      value={rsvpData.name}
+                      onChange={(e) => setRsvpData(prev => ({ ...prev, name: e.target.value }))}
+                      className={`h-14 rounded-2xl ${isDark ? 'bg-white/5 border-white/10' : 'bg-neutral-50'} text-lg`}
+                    />
+                  </div>
+                  <div className="space-y-4">
+                    <Label htmlFor="guests" className="text-base uppercase tracking-widest opacity-60 ml-1">Number of Guests</Label>
+                    <Input 
+                      id="guests" 
+                      type="number" 
+                      min="1" 
+                      max="10" 
+                      placeholder="1"
+                      value={rsvpData.guests}
+                      onChange={(e) => setRsvpData(prev => ({ ...prev, guests: parseInt(e.target.value) }))}
+                      className={`h-14 rounded-2xl ${isDark ? 'bg-white/5 border-white/10' : 'bg-neutral-50'} text-lg`}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <Label className="text-base uppercase tracking-widest opacity-60 ml-1">Attendance</Label>
+                  <div className="flex gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setRsvpData(prev => ({ ...prev, status: 'coming' }))}
+                      className={`flex-1 h-14 rounded-2xl border transition-all flex items-center justify-center gap-2 ${rsvpData.status === 'coming' ? (isDark ? 'bg-amber-500 border-amber-500 text-black' : 'bg-black border-black text-white') : (isDark ? 'border-white/10 text-white/40' : 'border-neutral-200 text-neutral-400')}`}
+                    >
+                      I'm Coming
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setRsvpData(prev => ({ ...prev, status: 'declined' }))}
+                      className={`flex-1 h-14 rounded-2xl border transition-all flex items-center justify-center gap-2 ${rsvpData.status === 'declined' ? (isDark ? 'bg-amber-500 border-amber-500 text-black' : 'bg-black border-black text-white') : (isDark ? 'border-white/10 text-white/40' : 'border-neutral-200 text-neutral-400')}`}
+                    >
+                      Regretfully Decline
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <Label htmlFor="rsvp-message" className="text-base uppercase tracking-widest opacity-60 ml-1">Message (Optional)</Label>
+                  <Textarea 
+                    id="rsvp-message"
+                    placeholder="Any special notes or dietary requirements?"
+                    value={rsvpData.message}
+                    onChange={(e) => setRsvpData(prev => ({ ...prev, message: e.target.value }))}
+                    className={`min-h-[120px] rounded-2xl ${isDark ? 'bg-white/5 border-white/10' : 'bg-neutral-50'} text-lg p-4`}
+                  />
+                </div>
+
+                <Button type="submit" size="lg" className={`w-full h-16 rounded-full text-xl shadow-xl transition-all ${isDark ? 'bg-amber-500 text-black hover:bg-amber-400' : 'bg-black text-white hover:bg-neutral-800'}`}>
+                  Confirm Response
+                </Button>
+              </form>
+            </div>
+          )}
         </div>
       </section>
 
