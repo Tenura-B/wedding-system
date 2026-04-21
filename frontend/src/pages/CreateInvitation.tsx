@@ -31,6 +31,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Badge } from "@/components/ui/badge";
 import { TemplatePreview } from "@/components/invitation/TemplatePreview";
+import api from "@/lib/api";
 
 const steps = [
   { id: "details", title: "Wedding Details", icon: <Heart className="h-5 w-5" /> },
@@ -155,16 +156,47 @@ export default function CreateInvitation() {
     }
   };
 
-  const publishInvitation = () => {
+  const publishInvitation = async () => {
     setIsPublishing(true);
-    // Simulate a brief premium "creation" moment
-    setTimeout(() => {
+    try {
       const slug = `${formData.brideName.toLowerCase().split(' ')[0]}-${formData.groomName.toLowerCase().split(' ')[0]}-${Date.now().toString().slice(-4)}`;
-      localStorage.setItem(`wedding-${slug}`, JSON.stringify(formData));
-      setIsPublished(true);
-      setPublishedSlug(slug);
+      
+      const data = new FormData();
+      data.append('slug', slug);
+      data.append('brideName', formData.brideName);
+      data.append('groomName', formData.groomName);
+      data.append('date', formData.date);
+      data.append('time', formData.time);
+      data.append('venueName', formData.venueName);
+      data.append('address', formData.address);
+      data.append('message', formData.message);
+      data.append('template', formData.template);
+      data.append('registries', JSON.stringify(formData.registries));
+      
+      // If we have a file from the input, append it as 'photo'
+      if (fileInputRef.current?.files?.[0]) {
+        data.append('photo', fileInputRef.current.files[0]);
+      } else if (formData.photo) {
+        // Fallback for base64 if needed, though file is preferred
+        data.append('photo', formData.photo);
+      }
+
+      const response = await api.post('/invitations', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.data) {
+        setIsPublished(true);
+        setPublishedSlug(slug);
+      }
+    } catch (error) {
+      console.error('Failed to publish invitation:', error);
+      alert('Failed to publish. Please check your connection and try again.');
+    } finally {
       setIsPublishing(false);
-    }, 2000);
+    }
   };
 
   const handlePreview = () => {

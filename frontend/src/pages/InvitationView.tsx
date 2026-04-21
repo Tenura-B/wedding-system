@@ -7,6 +7,8 @@ import { format, parseISO, intervalToDuration } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import api from "@/lib/api";
+import { toast } from "sonner";
 
 interface InvitationViewProps {
   previewData?: any;
@@ -25,22 +27,29 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
       return;
     }
     
-    const saved = localStorage.getItem(`wedding-${slug}`);
-    if (saved) {
-      setData(JSON.parse(saved));
-    } else {
-      // Demo data if none found
-      setData({
-        brideName: "Amelia Thorne",
-        groomName: "Jameson Grey",
-        date: "2026-06-12",
-        time: "16:00",
-        venueName: "The Grand Rose Estate",
-        address: "123 Lavender Lane, Napa Valley, CA 94558",
-        message: "We are joyfully announcing our marriage and would be honored if you could join us for this special celebration of love and commitment.",
-        template: "classic"
-      });
-    }
+    if (!slug) return;
+
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/invitations/${slug}`);
+        setData(response.data);
+      } catch (error) {
+        console.error("Error fetching invitation:", error);
+        // Fallback to demo data if not found, or show error
+        setData({
+          brideName: "Amelia Thorne",
+          groomName: "Jameson Grey",
+          date: "2026-06-12",
+          time: "16:00",
+          venueName: "The Grand Rose Estate",
+          address: "123 Lavender Lane, Napa Valley, CA 94558",
+          message: "We are joyfully announcing our marriage and would be honored if you could join us for this special celebration of love and commitment.",
+          template: "classic"
+        });
+      }
+    };
+
+    fetchData();
   }, [slug, previewData]);
 
   useEffect(() => {
@@ -67,12 +76,16 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
     }
   }, [data]);
 
-  const handleRSVP = (e: React.FormEvent) => {
+  const handleRSVP = async (e: React.FormEvent) => {
     e.preventDefault();
-    const existingRSVPs = JSON.parse(localStorage.getItem(`wedding-rsvps-${slug}`) || "[]");
-    const updatedRSVPs = [...existingRSVPs, { ...rsvpData, id: Date.now() }];
-    localStorage.setItem(`wedding-rsvps-${slug}`, JSON.stringify(updatedRSVPs));
-    setIsSubmitted(true);
+    try {
+      await api.post(`/invitations/${slug}/rsvp`, rsvpData);
+      setIsSubmitted(true);
+      toast.success("RSVP submitted successfully!");
+    } catch (error) {
+      console.error("Error submitting RSVP:", error);
+      toast.error("Failed to submit RSVP. Please try again.");
+    }
   };
 
   if (!data) return null;

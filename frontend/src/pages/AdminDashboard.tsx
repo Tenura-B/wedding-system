@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import api from "@/lib/api";
 
 export default function AdminDashboard() {
   const { slug } = useParams();
@@ -25,17 +26,23 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    // Load wedding details
-    const savedWedding = localStorage.getItem(`wedding-${slug}`);
-    if (savedWedding) {
-      setWeddingData(JSON.parse(savedWedding));
-    }
+    if (!slug) return;
 
-    // Load RSVPs
-    const savedRSVPs = localStorage.getItem(`wedding-rsvps-${slug}`);
-    if (savedRSVPs) {
-      setRsvps(JSON.parse(savedRSVPs));
-    }
+    const loadData = async () => {
+      try {
+        // Load wedding details
+        const weddingRes = await api.get(`/invitations/${slug}`);
+        setWeddingData(weddingRes.data);
+
+        // Load RSVPs
+        const rsvpsRes = await api.get(`/invitations/${slug}/rsvps`);
+        setRsvps(rsvpsRes.data);
+      } catch (error) {
+        console.error("Error loading dashboard data:", error);
+      }
+    };
+
+    loadData();
   }, [slug]);
 
   const filteredRSVPs = rsvps.filter(rsvp => 

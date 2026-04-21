@@ -13,10 +13,12 @@ import VendorProfile from "./pages/VendorProfile";
 import AdminDashboard from "./pages/AdminDashboard";
 import TemplatePreviewPage from "./pages/TemplatePreviewPage";
 import { ScrollToTop } from "./components/layout/ScrollToTop";
+import { Toaster } from "sonner";
 
 export default function App() {
   return (
     <Router>
+      <Toaster position="top-center" richColors />
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
