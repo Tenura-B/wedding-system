@@ -8,6 +8,9 @@ import dns from 'node:dns';
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 import Invitation from './models/Invitation.js';
 import RSVP from './models/RSVP.js';
+import User from './models/User.js';
+import auth from './middleware/auth.js';
+import jwt from 'jsonwebtoken';
 import upload from './config/cloudinary.js';
 
 dotenv.config();
@@ -29,17 +32,72 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use(cors());
 app.use(express.json());
 
-// API Routes
+// Health Check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Belle Vows API is running' });
 });
 
+// Auth Routes
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    const user = new User({ name, email, password });
+    await user.save();
+    
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    res.status(201).json({ user: { id: user._id, name: user.name, email: user.email }, token });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(401).json({ error: 'Invalid login credentials' });
+    }
+    
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    res.json({ user: { id: user._id, name: user.name, email: user.email }, token });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// User Dashboard Route
+app.get('/api/user/dashboard', auth, async (req, res) => {
+  try {
+    const invitations = await Invitation.find({ owner: req.user._id }).sort({ createdAt: -1 });
+    
+    // Enrich invitations with RSVP counts
+    const enrichedInvitations = await Promise.all(invitations.map(async (inv) => {
+      const rsvps = await RSVP.find({ invitationSlug: inv.slug });
+      return {
+        ...inv.toObject(),
+        stats: {
+          total: rsvps.reduce((acc, curr) => acc + (curr.status === 'coming' ? curr.guests : 0), 0),
+          responses: rsvps.length,
+          attending: rsvps.filter(r => r.status === 'coming').length,
+          declined: rsvps.filter(r => r.status === 'declined').length,
+        }
+      };
+    }));
+    
+    res.json(enrichedInvitations);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Invitation Routes
-app.post('/api/invitations', upload.single('photo'), async (req, res) => {
+app.post('/api/invitations', auth, upload.single('photo'), async (req, res) => {
   try {
     const invitationData = {
       ...req.body,
-      photoUrl: req.file ? req.file.path : undefined, // Cloudinary provides the path (URL)
+      owner: req.user._id,
+      photoUrl: req.file ? req.file.path : undefined,
       registries: req.body.registries ? JSON.parse(req.body.registries) : []
     };
     

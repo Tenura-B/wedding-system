@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Templates from "./pages/Templates";
@@ -10,10 +11,17 @@ import CreateInvitation from "./pages/CreateInvitation";
 import InvitationView from "./pages/InvitationView";
 import Vendors from "./pages/Vendors";
 import VendorProfile from "./pages/VendorProfile";
-import AdminDashboard from "./pages/AdminDashboard";
+import Dashboard from "./pages/Dashboard";
 import TemplatePreviewPage from "./pages/TemplatePreviewPage";
+import { Navigate } from "react-router-dom";
 import { ScrollToTop } from "./components/layout/ScrollToTop";
 import { Toaster } from "sonner";
+
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const token = localStorage.getItem('token');
+  if (!token) return <Navigate to="/" replace />;
+  return <>{children}</>;
+};
 
 export default function App() {
   return (
@@ -28,7 +36,14 @@ export default function App() {
         <Route path="/invite/:slug" element={<InvitationView />} />
         <Route path="/vendors" element={<Vendors />} />
         <Route path="/vendors/:id" element={<VendorProfile />} />
-        <Route path="/admin/:slug" element={<AdminDashboard />} />
+        <Route 
+          path="/dashboard" 
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
       </Routes>
     </Router>
   );

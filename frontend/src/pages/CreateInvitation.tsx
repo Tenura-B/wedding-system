@@ -468,7 +468,7 @@ export default function CreateInvitation() {
                             <div className="space-y-4 text-left w-full">
                               <span className="text-[10px] uppercase font-black tracking-[0.4em] text-neutral-400 block ml-2">Dedicated Invitation Link</span>
                               <div className="text-2xl md:text-4xl font-serif text-neutral-800 break-all">
-                                {window.location.host}/invite/{publishedSlug}
+                                {window.location.origin}/invite/{publishedSlug}
                               </div>
                             </div>
                             <div className="flex gap-4 w-full md:w-auto shrink-0">

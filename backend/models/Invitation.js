@@ -11,6 +11,7 @@ const invitationSchema = new mongoose.Schema({
   message: { type: String },
   template: { type: String, default: 'classic' },
   photoUrl: { type: String }, // Cloudinary URL
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   registries: [{
     name: String,
     url: String

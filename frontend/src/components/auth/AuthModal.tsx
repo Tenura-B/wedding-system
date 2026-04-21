@@ -1,4 +1,7 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "@/lib/api";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -19,7 +22,44 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("login");
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Form States
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: ""
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.id.replace('reg-', '')]: e.target.value });
+  };
+
+  const handleAuth = async (isRegister: boolean) => {
+    setIsLoading(true);
+    try {
+      const endpoint = isRegister ? '/auth/register' : '/auth/login';
+      const payload = isRegister ? formData : { email: formData.email, password: formData.password };
+      
+      const res = await api.post(endpoint, payload);
+      
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('user', JSON.stringify(res.data.user));
+      
+      toast.success(isRegister ? "Account created successfully!" : "Welcome back!");
+      onClose();
+      
+      // Redirect to dashboard and refresh to update navbar
+      navigate('/dashboard');
+      window.location.reload();
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || "Authentication failed");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -53,17 +93,34 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="email" className="text-sm font-medium ml-1">Email Address</Label>
-                      <Input id="email" type="email" placeholder="name@example.com" className="h-12 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all" />
+                      <Input 
+                        id="email" 
+                        type="email" 
+                        placeholder="name@example.com" 
+                        className="h-12 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all" 
+                        value={formData.email}
+                        onChange={handleInputChange}
+                      />
                     </div>
                     <div className="space-y-2">
                       <div className="flex justify-between items-center ml-1">
                         <Label htmlFor="password">Password</Label>
                         <button className="text-xs text-neutral-500 hover:text-black">Forgot password?</button>
                       </div>
-                      <Input id="password" type="password" className="h-12 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all" />
+                      <Input 
+                        id="password" 
+                        type="password" 
+                        className="h-12 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all" 
+                        value={formData.password}
+                        onChange={handleInputChange}
+                      />
                     </div>
-                    <Button className="w-full h-12 rounded-xl bg-black text-white hover:bg-neutral-800 transition-all shadow-lg shadow-black/5 mt-2">
-                      Enter Ethereal
+                    <Button 
+                      onClick={() => handleAuth(false)}
+                      disabled={isLoading}
+                      className="w-full h-12 rounded-xl bg-black text-white hover:bg-neutral-800 transition-all shadow-lg shadow-black/5 mt-2"
+                    >
+                      {isLoading ? "Signing in..." : "Enter Ethereal"}
                     </Button>
                   </div>
                 </TabsContent>
@@ -72,18 +129,41 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="name" className="text-sm font-medium ml-1">Full Name</Label>
-                      <Input id="name" placeholder="Katherine Pierce" className="h-12 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all" />
+                      <Input 
+                        id="name" 
+                        placeholder="Katherine Pierce" 
+                        className="h-12 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all" 
+                        value={formData.name}
+                        onChange={handleInputChange}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="reg-email" className="text-sm font-medium ml-1">Email Address</Label>
-                      <Input id="reg-email" type="email" placeholder="name@example.com" className="h-12 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all" />
+                      <Input 
+                        id="reg-email" 
+                        type="email" 
+                        placeholder="name@example.com" 
+                        className="h-12 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all" 
+                        value={formData.email}
+                        onChange={handleInputChange}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="reg-password">Password</Label>
-                      <Input id="reg-password" type="password" className="h-12 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all" />
+                      <Input 
+                        id="reg-password" 
+                        type="password" 
+                        className="h-12 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all" 
+                        value={formData.password}
+                        onChange={handleInputChange}
+                      />
                     </div>
-                    <Button className="w-full h-12 rounded-xl bg-black text-white hover:bg-neutral-800 transition-all shadow-lg shadow-black/5 mt-2">
-                      Create Account
+                    <Button 
+                      onClick={() => handleAuth(true)}
+                      disabled={isLoading}
+                      className="w-full h-12 rounded-xl bg-black text-white hover:bg-neutral-800 transition-all shadow-lg shadow-black/5 mt-2"
+                    >
+                      {isLoading ? "Creating Account..." : "Create Account"}
                     </Button>
                   </div>
                 </TabsContent>
