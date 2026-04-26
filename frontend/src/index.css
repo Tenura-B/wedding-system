@@ -92,6 +92,19 @@
   --sidebar-accent-foreground: #1F1F1F;
   --sidebar-border: rgba(0, 0, 0, 0.1);
   --sidebar-ring: #AF944F;
+
+  /* Dashboard V2 Theme (Site Colors) */
+  --dash-bg: #F7F3EF;
+  --dash-sidebar: #FDFBF7;
+  --dash-primary: #AF944F;
+  --dash-primary-fade: rgba(175, 148, 79, 0.1);
+  --dash-success: #10B981;
+  --dash-pending: #F59E0B;
+  --dash-danger: #D9BDB5;
+  --dash-card: #FFFFFF;
+  --dash-border: #E8D5C8;
+  --dash-text-main: #1F1F1F;
+  --dash-text-muted: rgba(31, 31, 31, 0.6);
 }
 
 @layer base {
@@ -157,4 +170,32 @@
 
 .template-card-ethereal {
   @apply flex items-center gap-4 p-3 bg-white/30 border border-white/40 rounded-[20px] cursor-pointer transition-all duration-300 hover:bg-white hover:-translate-x-2 hover:shadow-xl;
+}
+
+/* Dashboard Specific Utilities */
+.dash-card {
+  @apply bg-white rounded-[2rem] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)];
+}
+
+.dash-badge {
+  @apply px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider;
+}
+
+.dash-icon-btn {
+  @apply w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 active:scale-95;
+}
+
+.dash-btn-primary {
+  @apply bg-[#AF944F] text-white rounded-xl px-6 py-3 font-semibold shadow-lg shadow-[#AF944F]/20 hover:bg-[#967E42] transition-all;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.perspective-1000 {
+  perspective: 1000px;
 }

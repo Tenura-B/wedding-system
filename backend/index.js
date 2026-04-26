@@ -9,6 +9,7 @@ dns.setServers(['8.8.8.8', '8.8.4.4']);
 import Invitation from './models/Invitation.js';
 import RSVP from './models/RSVP.js';
 import User from './models/User.js';
+import Vendor from './models/Vendor.js';
 import auth from './middleware/auth.js';
 import jwt from 'jsonwebtoken';
 import upload from './config/cloudinary.js';
@@ -74,6 +75,7 @@ app.get('/api/user/dashboard', auth, async (req, res) => {
     // Enrich invitations with RSVP counts
     const enrichedInvitations = await Promise.all(invitations.map(async (inv) => {
       const rsvps = await RSVP.find({ invitationSlug: inv.slug });
+      const vendors = await Vendor.find({ invitation: inv._id });
       return {
         ...inv.toObject(),
         stats: {
@@ -81,7 +83,10 @@ app.get('/api/user/dashboard', auth, async (req, res) => {
           responses: rsvps.length,
           attending: rsvps.filter(r => r.status === 'coming').length,
           declined: rsvps.filter(r => r.status === 'declined').length,
-        }
+          vendorsBooked: vendors.filter(v => v.status === 'Booked').length,
+          totalVendors: vendors.length
+        },
+        vendors
       };
     }));
     
@@ -149,6 +154,26 @@ app.get('/api/invitations/:slug/rsvps', async (req, res) => {
     res.json(rsvps);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Vendor Routes
+app.get('/api/invitations/:id/vendors', auth, async (req, res) => {
+  try {
+    const vendors = await Vendor.find({ invitation: req.params.id });
+    res.json(vendors);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/invitations/:id/vendors', auth, async (req, res) => {
+  try {
+    const vendor = new Vendor({ ...req.body, invitation: req.params.id });
+    await vendor.save();
+    res.status(201).json(vendor);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 });
 

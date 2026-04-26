@@ -17,6 +17,10 @@ import { Navigate } from "react-router-dom";
 import { ScrollToTop } from "./components/layout/ScrollToTop";
 import { Toaster } from "sonner";
 
+import DashboardGuests from "./pages/DashboardGuests";
+import DashboardVendors from "./pages/DashboardVendors";
+import DashboardTimeline from "./pages/DashboardTimeline";
+
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const token = localStorage.getItem('token');
   if (!token) return <Navigate to="/" replace />;
@@ -41,6 +45,30 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/guests" 
+          element={
+            <ProtectedRoute>
+              <DashboardGuests />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/vendors-managed" 
+          element={
+            <ProtectedRoute>
+              <DashboardVendors />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/timeline" 
+          element={
+            <ProtectedRoute>
+              <DashboardTimeline />
             </ProtectedRoute>
           } 
         />

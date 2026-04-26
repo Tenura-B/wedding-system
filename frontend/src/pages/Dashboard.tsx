@@ -1,30 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "motion/react";
+import { Link } from "react-router-dom";
+import { motion } from "motion/react";
 import { 
   Users, 
-  MessageSquare, 
-  Plus, 
-  ExternalLink,
-  Settings,
-  Calendar,
-  MapPin,
-  ChevronRight,
+  CheckCircle2, 
+  Clock, 
+  Eye, 
+  Store,
   Download,
-  Search,
-  Filter,
   MoreVertical,
-  CheckCircle2,
-  XCircle,
-  ArrowRight
+  ArrowUpRight,
+  ArrowDownRight,
+  User,
+  Check,
+  FileText,
+  Link as LinkIcon
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import DashboardLayout from "@/components/layout/DashboardLayout";
 import api from "@/lib/api";
 import { toast } from "sonner";
-import { Copy, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function Dashboard() {
   const [invitations, setInvitations] = useState<any[]>([]);
@@ -32,10 +27,8 @@ export default function Dashboard() {
   const [rsvps, setRsvps] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRsvpLoading, setIsRsvpLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-  const [isCopying, setIsCopying] = useState(false);
   const selectedInvitation = invitations.find(inv => inv.slug === selectedSlug);
 
   useEffect(() => {
@@ -59,7 +52,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!selectedSlug) return;
-
     const fetchRSVPs = async () => {
       setIsRsvpLoading(true);
       try {
@@ -71,250 +63,255 @@ export default function Dashboard() {
         setIsRsvpLoading(false);
       }
     };
-
     fetchRSVPs();
   }, [selectedSlug]);
 
   const stats = {
-    total: rsvps.reduce((acc, curr) => acc + (curr.status === 'coming' ? (curr.guests || 1) : 0), 0),
-    responses: rsvps.length,
-    coming: rsvps.filter(r => r.status === 'coming').length,
-    declined: rsvps.filter(r => r.status === 'declined').length,
+    total: selectedInvitation?.stats?.total || 0,
+    responses: selectedInvitation?.stats?.responses || 0,
+    attending: selectedInvitation?.stats?.attending || 0,
+    declined: selectedInvitation?.stats?.declined || 0,
+    vendorsBooked: selectedInvitation?.stats?.vendorsBooked || 0,
+    totalVendors: selectedInvitation?.stats?.totalVendors || 0,
+    views: selectedInvitation ? 142 : 0, // Placeholder for views
   };
 
-  const copyInviteLink = () => {
-    if (!selectedSlug) return;
-    const url = `${window.location.origin}/invite/${selectedSlug}`;
-    navigator.clipboard.writeText(url);
-    setIsCopying(true);
-    toast.success("Invitation link copied to clipboard!");
-    setTimeout(() => setIsCopying(false), 2000);
+  const calculateCompletion = () => {
+    if (!selectedInvitation) return 0;
+    let score = 25; // Base for having an invitation
+    if (selectedInvitation.photoUrl) score += 25;
+    if (selectedInvitation.date && selectedInvitation.venueName) score += 25;
+    if (stats.vendorsBooked > 0) score += 25;
+    return score;
   };
 
-  const filteredRSVPs = rsvps.filter(rsvp => 
-    rsvp.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const completion = calculateCompletion();
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
-        <div className="animate-pulse flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-neutral-200" />
-          <div className="h-4 w-32 bg-neutral-200 rounded" />
-        </div>
+      <div className="min-h-screen bg-[#F7F3EF] flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-[#AF944F]/20 border-t-[#AF944F] rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      <Navbar />
-      
-      <main className="pt-40 pb-20 px-6 md:px-12">
-        <div className="container mx-auto max-w-[1440px]">
-          {/* Welcome Header */}
-          <header className="mb-12 flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-            <div>
-              <h1 className="text-4xl md:text-6xl font-serif mb-4">
-                Grand Atelier de <span className="italic block md:inline">{user.name?.split(' ')[0]}</span>
-              </h1>
-              <p className="text-muted-foreground text-lg max-w-xl">
-                Manage your invitations and guests with effortless grace in your central sanctuary.
-              </p>
-            </div>
-            <Button asChild size="lg" className="rounded-full bg-black text-white hover:bg-neutral-800 shadow-xl px-8 h-14 text-lg">
-              <Link to="/create">
-                Create New Invitation
-              </Link>
-            </Button>
-          </header>
+    <DashboardLayout invitationSlug={selectedSlug || undefined}>
+      <div className="space-y-6 md:space-y-10 max-w-[1440px] mx-auto overflow-hidden">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-[#1F1F1F] mb-1">
+              {selectedInvitation ? `${selectedInvitation.brideName} & ${selectedInvitation.groomName}` : 'Dashboard Overview'}
+            </h1>
+            <p className="text-neutral-500 font-medium text-base">
+              Welcome back, {user.name?.split(' ')[0]}. {selectedInvitation ? `Your wedding planning is ${completion}% complete.` : 'No upcoming weddings found.'}
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <button 
+              onClick={() => {
+                if (selectedInvitation) {
+                  const url = `${window.location.origin}/invite/${selectedInvitation.slug}`;
+                  navigator.clipboard.writeText(url);
+                  toast.success("Link copied to clipboard!");
+                }
+              }}
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-white border border-[#AF944F] rounded-xl font-bold text-xs md:text-sm text-[#AF944F] shadow-sm hover:bg-[#AF944F]/5 transition-all"
+            >
+              <LinkIcon className="h-4 w-4" />
+              Copy Site Link
+            </button>
+            <button className="flex items-center justify-center gap-2 px-6 py-3 bg-white border border-[#E8D5C8] rounded-xl font-bold text-xs md:text-sm text-[#1F1F1F] shadow-sm hover:bg-[#FDFBF7] transition-all">
+              <Download className="h-4 w-4" />
+              Export Report
+            </button>
+          </div>
+        </div>
 
-          {invitations.length === 0 ? (
-            <div className="bg-white rounded-[3rem] border border-neutral-100 p-20 text-center shadow-sm">
-              <div className="max-w-md mx-auto space-y-6">
-                <div className="w-20 h-20 bg-neutral-50 rounded-full flex items-center justify-center mx-auto">
-                  <Plus className="h-10 w-10 text-neutral-300" />
-                </div>
-                <h2 className="text-3xl font-serif">Compose Your First Invitation</h2>
-                <p className="text-muted-foreground">Start your journey by selecting a curated template or building a custom experience for your special day.</p>
-                <Button asChild size="lg" className="rounded-full bg-black text-white px-8">
-                  <Link to="/templates">Browse Templates</Link>
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-12">
-              {/* Invitation Switcher (Tabs) */}
-              <div className="flex overflow-x-auto pb-4 gap-4 no-scrollbar">
-                {invitations.map((inv) => (
-                  <button
-                    key={inv._id}
-                    onClick={() => setSelectedSlug(inv.slug)}
-                    className={`flex-shrink-0 px-8 py-4 rounded-full transition-all text-sm font-bold uppercase tracking-widest border-2 whitespace-nowrap ${
-                      selectedSlug === inv.slug 
-                        ? "bg-black text-white border-black shadow-lg shadow-black/10" 
-                        : "bg-white text-ink border-black/10 hover:border-black"
-                    }`}
-                  >
-                    {inv.brideName.split(' ')[0]} & {inv.groomName.split(' ')[0]}
-                  </button>
-                ))}
-              </div>
-
-              {selectedInvitation && (
-                <motion.div
-                  key={selectedSlug}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="space-y-12"
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          {[
+            { label: "Confirmed Guests", value: stats.total, icon: CheckCircle2, color: "#10B981", trend: "+12%", up: true },
+            { label: "Total Responses", value: stats.responses, icon: User, color: "#AF944F" },
+            { label: "Attending", value: stats.attending, icon: Check, color: "#10B981" },
+            { label: "Vendors Booked", value: stats.vendorsBooked, icon: Store, color: "#D9BDB5", progress: Math.round((stats.vendorsBooked / (stats.totalVendors || 1)) * 100) },
+          ].map((stat, i) => (
+            <div 
+              key={i} 
+              className="dash-card p-6 md:p-8 group relative overflow-hidden border-2"
+              style={{ borderColor: stat.color }}
+            >
+              <div className="flex items-start justify-between mb-6 md:mb-8">
+                <div 
+                  className="w-10 h-10 md:w-12 md:h-12 rounded-2xl flex items-center justify-center transition-all group-hover:scale-110"
+                  style={{ backgroundColor: `${stat.color}15`, color: stat.color }}
                 >
-                  {/* Stats & Actions Row */}
-                  <div className="grid grid-cols-1 xl:grid-cols-3 gap-10 items-start">
-                    {/* Active Wedding Info Card */}
-                    <div className="bg-white rounded-[2.5rem] p-10 border-2 border-black shadow-sm flex flex-col h-full">
-                      <div className="mb-8">
-                        <h3 className="text-3xl font-serif mb-2">
-                          {selectedInvitation.brideName} & {selectedInvitation.groomName}
-                        </h3>
-                        <p className="text-muted-foreground flex items-center gap-2">
-                          <Calendar className="h-4 w-4" /> 
-                          {new Date(selectedInvitation.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                        </p>
-                      </div>
-                      
-                      <div className="space-y-4 mb-8">
-                        <div className="flex items-center gap-3 text-sm">
-                          <MapPin className="h-4 w-4 text-gold" />
-                          <span className="text-muted-foreground">{selectedInvitation.venueName}</span>
-                        </div>
-                      </div>
-
-                      <div className="mt-auto grid grid-cols-2 gap-3">
-                        <Button asChild className="rounded-full bg-neutral-50 text-ink hover:bg-neutral-100 border border-neutral-100 h-12 whitespace-nowrap">
-                          <Link to={`/invite/${selectedSlug}`} target="_blank" className="flex items-center">
-                            <ExternalLink className="h-4 w-4 mr-2" /> View
-                          </Link>
-                        </Button>
-                        <Button 
-                          onClick={copyInviteLink}
-                          className={`rounded-full border-2 h-12 whitespace-nowrap transition-all duration-300 ${isCopying ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-white text-black border-black hover:bg-black hover:text-white'}`}
-                        >
-                          {isCopying ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
-                          {isCopying ? "Copied" : "Copy Link"}
-                        </Button>
-                      </div>
-                    </div>
-
-                    {/* Stats Grid - Taking 2/3 space on xl */}
-                    <div className="xl:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-6">
-                      {[
-                        { label: "Total Guests", value: stats.total, icon: <Users className="h-5 w-5" />, color: "bg-blue-500" },
-                        { label: "Responses", value: stats.responses, icon: <MessageSquare className="h-5 w-5" />, color: "bg-amber-500" },
-                        { label: "Attending", value: stats.coming, icon: <CheckCircle2 className="h-5 w-5" />, color: "bg-emerald-500" },
-                        { label: "Declined", value: stats.declined, icon: <XCircle className="h-5 w-5" />, color: "bg-rose-500" },
-                      ].map((stat, i) => (
-                        <div key={i} className="bg-white p-8 rounded-[2.5rem] border-2 border-black shadow-sm transition-all hover:shadow-xl hover:shadow-black/5">
-                          <div className={`w-12 h-12 rounded-2xl ${stat.color} text-white flex items-center justify-center mb-6`}>
-                            {stat.icon}
-                          </div>
-                          <p className="text-[10px] uppercase font-bold tracking-[2px] text-muted-foreground mb-1">{stat.label}</p>
-                          <p className="text-4xl font-serif">{stat.value}</p>
-                        </div>
-                      ))}
-                    </div>
+                  <stat.icon className="h-5 w-5 md:h-6 md:w-6" />
+                </div>
+                {stat.trend && (
+                  <div className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm",
+                    stat.up ? "bg-emerald-50 text-emerald-600 border border-emerald-100" : "bg-rose-50 text-rose-600 border border-rose-100"
+                  )}>
+                    {stat.up ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
+                    {stat.trend}
                   </div>
+                )}
+              </div>
+              
+              <div>
+                <p className="text-base font-bold uppercase tracking-wider text-neutral-400 mb-1">{stat.label}</p>
+                <h3 className={cn(
+                  "text-[20px] md:text-[24px] font-bold text-[#1F1F1F]",
+                  stat.progress ? "mb-4 md:mb-6" : "mb-0"
+                )}>
+                  {stat.value}
+                </h3>
+              </div>
 
-                  {/* Guest List Management */}
-                  <div className="bg-white rounded-[3rem] border-2 border-black shadow-sm overflow-hidden">
-                    <div className="p-10 border-b border-neutral-50 flex flex-col md:flex-row justify-between items-center gap-6">
-                      <div className="flex items-center gap-4">
-                        <Users className="h-6 w-6 text-gold" />
-                        <h3 className="text-2xl md:text-3xl font-serif">Guest List</h3>
-                      </div>
-                      <div className="flex items-center gap-4 w-full md:w-auto">
-                        <div className="relative flex-grow">
-                          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/50" />
-                          <input 
-                            placeholder="Search names..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full md:w-80 h-14 pl-12 pr-6 bg-neutral-50 border-none rounded-full text-sm focus:ring-2 focus:ring-black/5 transition-all"
-                          />
-                        </div>
-                        <Button variant="outline" className="rounded-full h-14 px-8 border-neutral-100 bg-neutral-50 hover:bg-neutral-100 whitespace-nowrap">
-                          <Download className="h-5 w-5 mr-2" /> Export
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="overflow-x-auto min-h-[300px]">
-                      {isRsvpLoading ? (
-                        <div className="flex flex-col items-center justify-center py-20 gap-4">
-                          <div className="w-10 h-10 border-2 border-gold/20 border-t-gold rounded-full animate-spin" />
-                          <p className="text-muted-foreground font-serif italic">Curating your guest list...</p>
-                        </div>
-                      ) : (
-                        <table className="w-full text-left">
-                          <thead className="bg-neutral-50/50">
-                            <tr>
-                              <th className="px-10 py-5 text-xs font-bold uppercase tracking-[2px] text-muted-foreground">Guest Name</th>
-                              <th className="px-10 py-5 text-xs font-bold uppercase tracking-[2px] text-muted-foreground">Status</th>
-                              <th className="px-10 py-5 text-xs font-bold uppercase tracking-[2px] text-muted-foreground">Party Size</th>
-                              <th className="px-10 py-5 text-xs font-bold uppercase tracking-[2px] text-muted-foreground">Words from Guest</th>
-                              <th className="px-10 py-5 text-xs font-bold uppercase tracking-[2px] text-muted-foreground text-right">Action</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-neutral-50">
-                            {filteredRSVPs.length === 0 ? (
-                              <tr>
-                                <td colSpan={5} className="px-10 py-24 text-center">
-                                  <div className="max-w-xs mx-auto space-y-4">
-                                    <div className="w-16 h-16 bg-neutral-50 rounded-full flex items-center justify-center mx-auto">
-                                      <Users className="h-8 w-8 text-neutral-200" />
-                                    </div>
-                                    <p className="text-xl font-serif">No responses yet</p>
-                                    <p className="text-muted-foreground text-sm">Share your invitation link to start collecting RSVPs from your loved ones.</p>
-                                  </div>
-                                </td>
-                              </tr>
-                            ) : (
-                              filteredRSVPs.map((rsvp, idx) => (
-                                <tr key={idx} className="hover:bg-neutral-50/30 transition-colors">
-                                  <td className="px-10 py-8 font-serif text-xl">{rsvp.name}</td>
-                                  <td className="px-10 py-8">
-                                    <span className={`inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase border ${
-                                      rsvp.status === 'coming' 
-                                        ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
-                                        : 'bg-rose-50 text-rose-700 border-rose-100'
-                                    }`}>
-                                      {rsvp.status === 'coming' ? 'Attending' : 'Declined'}
-                                    </span>
-                                  </td>
-                                  <td className="px-10 py-8 text-2xl font-serif">{rsvp.guests || 1}</td>
-                                  <td className="px-10 py-8 text-muted-foreground text-sm max-w-sm italic leading-relaxed">
-                                    {rsvp.message ? `"${rsvp.message}"` : <span className="opacity-30">—</span>}
-                                  </td>
-                                  <td className="px-10 py-8 text-right">
-                                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-neutral-100">
-                                      <MoreVertical className="h-5 w-5 text-neutral-400" />
-                                    </Button>
-                                  </td>
-                                </tr>
-                              ))
-                            )}
-                          </tbody>
-                        </table>
-                      )}
-                    </div>
+              {stat.progress !== undefined && (
+                <div className="space-y-3">
+                  <div className="flex justify-between text-sm font-bold">
+                    <span className="text-neutral-400 font-serif italic text-base">{stats.vendorsBooked}/{stats.totalVendors} vendors</span>
+                    <span className="text-[#1F1F1F] text-base">{stat.progress}%</span>
                   </div>
-                </motion.div>
+                  <div className="h-1.5 w-full bg-[#E8D5C8]/20 rounded-full overflow-hidden border border-[#E8D5C8]/10">
+                    <motion.div 
+                      className="h-full bg-[#D9BDB5] rounded-full shadow-[0_0_10px_rgba(217,189,181,0.5)]"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${stat.progress}%` }}
+                      transition={{ duration: 1, delay: 0.5 }}
+                    />
+                  </div>
+                </div>
               )}
             </div>
-          )}
+          ))}
         </div>
-      </main>
 
-      <Footer />
-    </div>
+        {/* Tables Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 overflow-hidden">
+          {/* Recent RSVPs */}
+          <div className="lg:col-span-2 dash-card flex flex-col">
+            <div className="p-6 md:p-8 flex items-center justify-between border-b border-[#E8D5C8]/30">
+              <h3 className="text-lg md:text-xl font-bold text-[#1F1F1F]">Recent RSVPs</h3>
+              <button className="text-xs md:text-sm font-bold text-[#AF944F] hover:underline uppercase tracking-widest">View All</button>
+            </div>
+            
+            <div className="p-4 flex-1">
+              <div className="space-y-1">
+                {isRsvpLoading ? (
+                   <div className="py-20 flex flex-col items-center gap-3">
+                      <div className="w-8 h-8 border-2 border-[#AF944F]/20 border-t-[#AF944F] rounded-full animate-spin" />
+                      <p className="text-xs text-neutral-400">Loading guests...</p>
+                   </div>
+                ) : rsvps.slice(0, 5).map((rsvp, idx) => (
+                  <div key={idx} className="flex flex-wrap items-center justify-between p-4 hover:bg-[#FDFBF7] rounded-2xl transition-all group gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#E8D5C8]/20 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm transition-transform group-hover:scale-110">
+                        <User className="h-5 w-5 text-[#AF944F]/60" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-[#1F1F1F] text-base">{rsvp.name}</h4>
+                        <p className="text-sm text-neutral-400 font-medium">
+                          {rsvp.guests || 1} guests confirmed • Received {idx + 1}h ago
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className={cn(
+                      "dash-badge border rounded-lg md:rounded-full",
+                      rsvp.status === 'coming' 
+                        ? "bg-emerald-50 text-emerald-600 border-emerald-100" 
+                        : "bg-rose-50 text-rose-600 border-rose-100"
+                    )}>
+                      {rsvp.status === 'coming' ? 'Attending' : 'Declined'}
+                    </div>
+                  </div>
+                ))}
+                
+                {!isRsvpLoading && rsvps.length === 0 && (
+                  <div className="py-20 text-center space-y-4">
+                    <div className="w-16 h-16 bg-[#FDFBF7] rounded-full flex items-center justify-center mx-auto text-[#E8D5C8]">
+                      <Users className="h-8 w-8" />
+                    </div>
+                    <p className="text-neutral-400 font-serif italic">No recent RSVPs yet.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="p-6 md:p-8 mt-auto border-t border-[#E8D5C8]/30">
+              <div className="flex items-center justify-between text-sm font-bold uppercase tracking-wider text-neutral-400 mb-3">
+                <span className="font-serif italic font-normal normal-case text-base">Overall completion</span>
+                <span className="text-[#1F1F1F]">{completion}%</span>
+              </div>
+              <div className="h-2 w-full bg-[#E8D5C8]/20 rounded-full overflow-hidden">
+                <motion.div 
+                  className="h-full bg-[#AF944F] rounded-full shadow-[0_0_10px_rgba(175,148,79,0.3)]"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${completion}%` }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Vendor Status */}
+          <div className="dash-card flex flex-col">
+            <div className="p-6 md:p-8 flex items-center justify-between border-b border-[#E8D5C8]/30">
+              <h3 className="text-lg md:text-xl font-bold text-[#1F1F1F]">Vendor Status</h3>
+              <button className="text-xs md:text-sm font-bold text-[#AF944F] hover:underline uppercase tracking-widest">Edit</button>
+            </div>
+            
+            <div className="p-6 space-y-6 flex-1">
+              {(selectedInvitation?.vendors || []).slice(0, 5).map((vendor, i) => (
+                <div key={i} className="flex items-center justify-between group cursor-pointer">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-[#FDFBF7] flex items-center justify-center transition-all group-hover:bg-white group-hover:shadow-md border border-[#E8D5C8]/20 group-hover:border-[#AF944F]/20">
+                      <Store className="h-5 w-5 text-[#E8D5C8]" />
+                    </div>
+                    <div>
+                      <h4 className="text-base font-bold text-[#1F1F1F] leading-none mb-1 group-hover:text-[#AF944F] transition-colors">{vendor.name}</h4>
+                      <p className="text-sm text-neutral-400 font-medium">{vendor.category}</p>
+                    </div>
+                  </div>
+                  
+                  <div className={cn(
+                    "flex items-center gap-2 text-sm font-bold whitespace-nowrap px-2 py-1 rounded-lg md:bg-transparent md:p-0",
+                    vendor.status === 'Booked' && "text-emerald-500 md:bg-emerald-50/50",
+                    vendor.status === 'Quote Sent' && "text-[#AF944F] md:bg-[#AF944F]/5",
+                    vendor.status === 'Awaiting' && "text-[#D9BDB5] md:bg-[#D9BDB5]/5"
+                  )}>
+                    <div className={cn(
+                      "w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm",
+                      vendor.status === 'Booked' && "bg-emerald-500 text-white",
+                      vendor.status === 'Quote Sent' && "bg-[#AF944F] text-white",
+                      vendor.status === 'Awaiting' && "bg-[#D9BDB5] text-white"
+                    )}>
+                      {vendor.status === 'Booked' ? <Check className="h-3 w-3" /> : (vendor.status === 'Quote Sent' ? <FileText className="h-3 w-3" /> : <Clock className="h-3 w-3" />)}
+                    </div>
+                    <span className="hidden sm:inline">{vendor.status}</span>
+                  </div>
+                </div>
+              ))}
+
+              {(!selectedInvitation?.vendors || selectedInvitation.vendors.length === 0) && (
+                <div className="py-10 text-center text-neutral-400 text-sm italic">
+                  No vendors added yet.
+                </div>
+              )}
+            </div>
+
+            <div className="p-6">
+              <button className="w-full h-12 border border-[#E8D5C8] bg-[#FDFBF7] rounded-xl text-[10px] font-bold text-[#AF944F] hover:bg-[#AF944F] hover:text-white hover:border-[#AF944F] transition-all uppercase tracking-[2px]">
+                Add Vendor
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </DashboardLayout>
   );
 }

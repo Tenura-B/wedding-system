@@ -26,7 +26,7 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
       setData(previewData);
       return;
     }
-    
+
     if (!slug) return;
 
     const fetchData = async () => {
@@ -54,18 +54,18 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
 
   useEffect(() => {
     if (!data?.date) return;
-    
+
     try {
       const targetDate = parseISO(`${data.date}T${data.time || '00:00'}:00`);
       if (isNaN(targetDate.getTime())) return;
-      
+
       const timer = setInterval(() => {
         const now = new Date();
         if (now >= targetDate) {
           setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
           return;
         }
-        
+
         const duration = intervalToDuration({ start: now, end: targetDate });
         setTimeLeft(duration);
       }, 1000);
@@ -95,14 +95,13 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
   const isFloral = data.template === "floral";
 
   return (
-    <div className={`min-h-screen transition-colors duration-1000 ${
-      isDark ? 'bg-neutral-950 text-white' : 
-      isFloral ? 'bg-rose-50 text-neutral-900 font-serif' : 
-      'bg-white text-neutral-900'
-    }`}>
-      
+    <div className={`min-h-screen transition-colors duration-1000 ${isDark ? 'bg-neutral-950 text-white' :
+        isFloral ? 'bg-rose-50 text-neutral-900 font-serif' :
+          'bg-white text-neutral-900'
+      }`}>
+
       {/* Dynamic Template Rendering */}
-      
+
       {/* Hero Section */}
       <section className="relative h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden">
         {/* Decorative elements based on template */}
@@ -112,13 +111,13 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
             <img src="https://images.unsplash.com/photo-1555529731-118a8a46bd3b?w=400&auto=format&fit=crop" className="absolute bottom-0 left-0 w-64 opacity-20" alt="" />
           </>
         )}
-        
+
         {isDark && (
           <div className="absolute inset-0 bg-gradient-to-b from-neutral-900 to-black z-0" />
         )}
-        
+
         <div className="relative z-10 max-w-4xl space-y-12">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2 }}
@@ -132,7 +131,7 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
               {data.groomName ? data.groomName.split(' ')[0] : 'Groom'}
             </h1>
           </motion.div>
-          
+
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -143,7 +142,7 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
               Are Tying the Knot
             </p>
             <div className={`h-[1px] w-24 mx-auto ${isDark ? 'bg-amber-500' : 'bg-neutral-900'}`} />
-            <p 
+            <p
               className={`text-xl md:text-3xl font-serif max-w-2xl mx-auto leading-relaxed px-6 ${isMinimal ? 'font-sans italic' : ''}`}
             >
               "{data.message}"
@@ -165,7 +164,7 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
                 {data.date ? format(parseISO(data.date), 'MMMM d, yyyy') : 'Date to be announced'}
               </p>
             </div>
-            
+
             <div className="space-y-4">
               <div className={`w-12 h-12 mx-auto rounded-full flex items-center justify-center ${isDark ? 'bg-amber-500/10 text-amber-500' : 'bg-neutral-100'}`}>
                 <Clock className="h-6 w-6" />
@@ -175,7 +174,7 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
                 {data.time || '4:00 PM'}
               </p>
             </div>
-            
+
             <div className="space-y-4">
               <div className={`w-12 h-12 mx-auto rounded-full flex items-center justify-center ${isDark ? 'bg-amber-500/10 text-amber-500' : 'bg-neutral-100'}`}>
                 <MapPin className="h-6 w-6" />
@@ -185,15 +184,15 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
                 {data.venueName}
               </p>
               <p className="text-sm text-muted-foreground mb-4">{data.address}</p>
-              
+
               <div className="rounded-2xl overflow-hidden h-48 w-full border border-neutral-200">
-                <iframe 
-                  width="100%" 
-                  height="100%" 
-                  frameBorder="0" 
-                  scrolling="no" 
-                  marginHeight={0} 
-                  marginWidth={0} 
+                <iframe
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
+                  scrolling="no"
+                  marginHeight={0}
+                  marginWidth={0}
                   src={`https://maps.google.com/maps?q=${encodeURIComponent(data.address)}&t=&z=13&ie=UTF8&iwloc=B&output=embed`}
                 ></iframe>
               </div>
@@ -235,9 +234,9 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[1, 2, 3, 4].map(i => (
               <div key={i} className="aspect-[4/5] rounded-3xl overflow-hidden bg-neutral-200">
-                <img 
-                  src={`https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop&sig=${i}`} 
-                  alt="" 
+                <img
+                  src={`https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop&sig=${i}`}
+                  alt=""
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 cursor-copy"
                 />
               </div>
@@ -250,29 +249,29 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
       {data.registries && data.registries.length > 0 && (
         <section className={`py-24 ${isDark ? 'bg-neutral-900 shadow-inner' : 'bg-neutral-50'}`}>
           <div className="container mx-auto px-4 max-w-4xl">
-             <div className="text-center mb-12">
-               <span className={`text-[16px] tracking-[0.4em] uppercase font-bold opacity-60 mb-4 block`}>Curation of Love</span>
-               <h2 className="text-4xl md:text-5xl font-serif">Gift Registry</h2>
-             </div>
-             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-               {data.registries.map((reg: any, i: number) => (
-                 <a 
-                   key={i} 
-                   href={reg.url} 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   className={`group flex items-center justify-between p-6 rounded-[2rem] border transition-all duration-500 ${isDark ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-neutral-100 hover:shadow-xl'}`}
-                 >
-                   <div className="flex items-center gap-4">
-                     <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isDark ? 'bg-amber-500/20 text-amber-500' : 'bg-neutral-100 text-neutral-900 group-hover:bg-black group-hover:text-white transition-colors'}`}>
-                       <Gift className="h-6 w-6" />
-                     </div>
-                     <span className="font-serif text-xl">{reg.name}</span>
-                   </div>
-                   <ExternalLink className="h-5 w-5 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-                 </a>
-               ))}
-             </div>
+            <div className="text-center mb-12">
+              <span className={`text-[16px] tracking-[0.4em] uppercase font-bold opacity-60 mb-4 block`}>Curation of Love</span>
+              <h2 className="text-4xl md:text-5xl font-serif">Gift Registry</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {data.registries.map((reg: any, i: number) => (
+                <a
+                  key={i}
+                  href={reg.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`group flex items-center justify-between p-6 rounded-[2rem] border transition-all duration-500 ${isDark ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-neutral-100 hover:shadow-xl'}`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isDark ? 'bg-amber-500/20 text-amber-500' : 'bg-neutral-100 text-neutral-900 group-hover:bg-black group-hover:text-white transition-colors'}`}>
+                      <Gift className="h-6 w-6" />
+                    </div>
+                    <span className="font-serif text-xl">{reg.name}</span>
+                  </div>
+                  <ExternalLink className="h-5 w-5 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                </a>
+              ))}
+            </div>
           </div>
         </section>
       )}
@@ -281,7 +280,7 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
       <section className={`py-32 px-4 transition-all duration-1000 border-t ${isDark ? 'border-neutral-800' : 'border-neutral-100'}`}>
         <div className="max-w-2xl mx-auto">
           {isSubmitted ? (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               className="text-center space-y-6 py-12"
@@ -291,8 +290,8 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
               </div>
               <h2 className="text-4xl md:text-5xl font-serif">Thank You</h2>
               <p className="text-xl text-muted-foreground">Your response has been saved. We can't wait to see you!</p>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="rounded-full px-8"
                 onClick={() => setIsSubmitted(false)}
               >
@@ -310,9 +309,9 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-4">
                     <Label htmlFor="name" className="text-base uppercase tracking-widest opacity-60 ml-1">Full Name</Label>
-                    <Input 
-                      id="name" 
-                      required 
+                    <Input
+                      id="name"
+                      required
                       placeholder="e.g. Elena Gilbert"
                       value={rsvpData.name}
                       onChange={(e) => setRsvpData(prev => ({ ...prev, name: e.target.value }))}
@@ -321,11 +320,11 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
                   </div>
                   <div className="space-y-4">
                     <Label htmlFor="guests" className="text-base uppercase tracking-widest opacity-60 ml-1">Number of Guests</Label>
-                    <Input 
-                      id="guests" 
-                      type="number" 
-                      min="1" 
-                      max="10" 
+                    <Input
+                      id="guests"
+                      type="number"
+                      min="1"
+                      max="10"
                       placeholder="1"
                       value={rsvpData.guests}
                       onChange={(e) => setRsvpData(prev => ({ ...prev, guests: parseInt(e.target.value) }))}
@@ -356,7 +355,7 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
 
                 <div className="space-y-4">
                   <Label htmlFor="rsvp-message" className="text-base uppercase tracking-widest opacity-60 ml-1">Message (Optional)</Label>
-                  <Textarea 
+                  <Textarea
                     id="rsvp-message"
                     placeholder="Any special notes or dietary requirements?"
                     value={rsvpData.message}
@@ -383,7 +382,7 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
           <MapIcon className="h-5 w-5" />
         </Button>
         <Button asChild className="rounded-full px-8 h-12 bg-white text-black hover:bg-neutral-100 border border-black/10">
-           <Link to="/">Create Your Own</Link>
+          <Link to="/">Create Your Own</Link>
         </Button>
       </div>
 

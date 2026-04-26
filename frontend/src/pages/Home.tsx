@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Heart, Calendar, MapPin, Camera, Music, Hotel } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { Testimonials } from "@/components/sections/Testimonials";
 
 export default function Home() {
   const [videoIndex, setVideoIndex] = useState(0);
@@ -91,7 +92,7 @@ export default function Home() {
       </section>
 
       {/* 🧩 SECTION 1: FEATURED TEMPLATES */}
-      <section className="py-32 px-6 md:px-12 bg-white overflow-hidden relative">
+      <section className="pt-32 pb-16 px-6 md:px-12 bg-white overflow-hidden relative">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
         
         <div className="container mx-auto relative z-10">
@@ -152,39 +153,77 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 🧩 SECTION 2: HOW IT WORKS */}
-      <section className="py-32 px-6 md:px-12 bg-cream border-y border-gold/10">
-        <div className="container mx-auto">
-          <div className="text-center mb-24">
-            <span className="text-gold text-[16px] tracking-[4px] uppercase font-bold mb-4 block">Atelier Process</span>
-            <h2 className="text-4xl md:text-5xl font-serif">Three Steps to Perfection</h2>
-          </div>
+      {/* 🧩 SECTION 2: OUR PROCESS */}
+      <section className="pt-16 pb-32 px-6 md:px-12 bg-white relative overflow-hidden">
+        {/* Subtle Background Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#FFF5EC] blur-[140px] rounded-full opacity-60 pointer-events-none" />
+        
+        <div className="container mx-auto relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
+            {/* Left Content */}
+            <div className="lg:sticky lg:top-32">
+              <span className="text-gold text-[16px] tracking-[4px] uppercase font-bold mb-4 block">Our Process</span>
+              <h2 className="text-3xl md:text-6xl font-serif leading-tight mb-8">
+                Crafting Your <br /> Perfect Celebration
+              </h2>
+              <p className="text-lg text-neutral-400 font-medium leading-relaxed mb-12 max-w-md">
+                Experience a seamless journey from template selection to guest management with our high-end digital invitation suite.
+              </p>
+            </div>
 
-          <div className="relative grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
-            {/* Connecting Line (Desktop) */}
-            <div className="hidden md:block absolute top-[40px] left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent z-0" />
-            
-            {[
-              { icon: <Heart className="w-6 h-6" />, title: "Choose Template", desc: "Select a curated design that matches your wedding theme." },
-              { icon: <Calendar className="w-6 h-6" />, title: "Enter Details", desc: "Personalize with your names, date, venue, and a special message." },
-              { icon: <MapPin className="w-6 h-6" />, title: "Share Invitation", desc: "Instantly share your high-end digital invite with your guests." }
-            ].map((step, i) => (
-              <motion.div 
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.2 }}
-                className="relative z-10 flex flex-col items-center text-center group"
-              >
-                <div className="w-20 h-20 rounded-full glass-morphism border-gold/20 flex items-center justify-center mb-8 bg-white transition-transform duration-500 group-hover:-rotate-12 shadow-xl group-hover:text-gold">
-                  {step.icon}
-                </div>
-                <h4 className="text-xl font-serif mb-4">{step.title}</h4>
-                <p className="text-[16px] text-ink/60 font-light leading-relaxed px-4">{step.desc}</p>
-                <div className="mt-8 text-gold font-serif text-5xl font-black italic select-none">0{i+1}</div>
-              </motion.div>
-            ))}
+            {/* Right Cards */}
+            <div className="space-y-8">
+              {[
+                { 
+                  num: "1", 
+                  title: "Curated Selection", 
+                  desc: "Browse our hand-picked collection of elegant, responsive invitation templates." 
+                },
+                { 
+                  num: "2", 
+                  title: "Artistic Customization", 
+                  desc: "Infuse your story with personal photos, elegant typography, and wedding venue details." 
+                },
+                { 
+                  num: "3", 
+                  title: "Seamless Launch", 
+                  desc: "Publish your invite instantly with a unique link and integrated RSVP guest management tools.",
+                  img: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop"
+                }
+              ].map((step, i) => (
+                <motion.div 
+                  key={i}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.5 }}
+                  className="group bg-white border-2 border-black rounded-[2rem] p-8 md:p-10 shadow-[4px_4px_0px_#000] hover:shadow-[6px_6px_0px_#000] transition-all duration-500 overflow-hidden"
+                >
+                  <div className="flex items-baseline gap-6 mb-2">
+                    <span className="text-2xl font-black text-[#1F1F1F] leading-none">{step.num}</span>
+                    <h3 className="text-2xl md:text-3xl font-bold text-[#1F1F1F] tracking-tight">{step.title}</h3>
+                  </div>
+
+                  {step.img && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                      whileHover={{ height: "auto", opacity: 1, marginTop: "2rem" }}
+                      className="overflow-hidden rounded-[1.5rem] border-2 border-black transition-all duration-700 ease-in-out"
+                    >
+                      <img 
+                        src={step.img} 
+                        alt={step.title} 
+                        className="w-full h-56 object-cover"
+                      />
+                    </motion.div>
+                  )}
+
+                  <p className="text-lg text-neutral-400 font-medium leading-relaxed pt-2 group-hover:text-[#1F1F1F] transition-colors">
+                    {step.desc}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -238,6 +277,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* 🧩 SECTION 4: TESTIMONIALS */}
+      <Testimonials />
 
       <Footer />
     </div>
