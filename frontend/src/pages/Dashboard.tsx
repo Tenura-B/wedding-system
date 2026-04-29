@@ -14,7 +14,9 @@ import {
   User,
   Check,
   FileText,
-  Link as LinkIcon
+  Link as LinkIcon,
+  ClipboardList,
+  Wallet
 } from "lucide-react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import api from "@/lib/api";
@@ -27,6 +29,8 @@ export default function Dashboard() {
   const [rsvps, setRsvps] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRsvpLoading, setIsRsvpLoading] = useState(false);
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [budget, setBudget] = useState<any>(null);
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   const selectedInvitation = invitations.find(inv => inv.slug === selectedSlug);
@@ -64,7 +68,21 @@ export default function Dashboard() {
       }
     };
     fetchRSVPs();
-  }, [selectedSlug]);
+
+    const fetchExtraData = async () => {
+      try {
+        const [tasksRes, budgetRes] = await Promise.all([
+          api.get(`/invitations/${selectedInvitation._id}/tasks`),
+          api.get(`/invitations/${selectedInvitation._id}/budget`)
+        ]);
+        setTasks(tasksRes.data);
+        setBudget(budgetRes.data);
+      } catch (error) {
+        console.error("Error fetching extra data:", error);
+      }
+    };
+    if (selectedInvitation?._id) fetchExtraData();
+  }, [selectedSlug, selectedInvitation?._id]);
 
   const stats = {
     total: selectedInvitation?.stats?.total || 0,
@@ -255,6 +273,50 @@ export default function Dashboard() {
                   transition={{ duration: 1.5, ease: "easeOut" }}
                 />
               </div>
+            </div>
+          </div>
+
+          {/* New Summary Grid for Planning & Budget */}
+          <div className="space-y-6 md:space-y-8">
+            {/* Planning Widget */}
+            <div className="dash-card p-6 md:p-8 !bg-[#AF944F] text-white border-none shadow-xl shadow-[#AF944F]/20 relative overflow-hidden group">
+               <ClipboardList className="absolute -right-4 -bottom-4 h-24 w-24 opacity-10 rotate-12 transition-transform group-hover:scale-110" />
+               <h3 className="text-xl font-bold mb-6">Planning Progress</h3>
+               <div className="flex items-end justify-between mb-4">
+                  <div>
+                    <p className="text-[40px] font-black leading-none mb-2">
+                      {tasks.length > 0 ? Math.round((tasks.filter(t => t.completed).length / tasks.length) * 100) : 0}%
+                    </p>
+                    <p className="text-white/60 text-xs font-bold uppercase tracking-widest">Tasks Completed</p>
+                  </div>
+                  <Link to="/planning" className="p-3 bg-white/20 rounded-xl hover:bg-white/30 transition-all">
+                    <ArrowUpRight className="h-5 w-5" />
+                  </Link>
+               </div>
+               <div className="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: `${tasks.length > 0 ? (tasks.filter(t => t.completed).length / tasks.length) * 100 : 0}%` }}
+                    className="h-full bg-white rounded-full"
+                  />
+               </div>
+            </div>
+
+            {/* Budget Widget */}
+            <div className="dash-card p-6 md:p-8 bg-white border-[#E8D5C8]/50 shadow-sm relative overflow-hidden group">
+               <Wallet className="absolute -right-4 -bottom-4 h-24 w-24 text-[#AF944F]/5 rotate-12 transition-transform group-hover:scale-110" />
+               <h3 className="text-xl font-bold text-[#1F1F1F] mb-6">Budget Status</h3>
+               <div className="space-y-4">
+                  <div className="flex justify-between items-center p-4 !bg-[#FDFBF7] rounded-2xl border border-[#E8D5C8]/30">
+                    <span className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Remaining</span>
+                    <span className="text-xl font-black text-[#AF944F]">
+                      ${budget ? (budget.totalBudget - budget.expenses.reduce((acc:any, c:any)=>acc+c.amount, 0)).toLocaleString() : '0'}
+                    </span>
+                  </div>
+                  <Link to="/budget" className="w-full flex items-center justify-center gap-2 py-4 !bg-[#AF944F] text-white rounded-2xl font-bold text-sm hover:scale-[1.02] transition-all">
+                    Manage Finances
+                  </Link>
+               </div>
             </div>
           </div>
 

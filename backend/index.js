@@ -10,6 +10,8 @@ import Invitation from './models/Invitation.js';
 import RSVP from './models/RSVP.js';
 import User from './models/User.js';
 import Vendor from './models/Vendor.js';
+import Task from './models/Task.js';
+import Budget from './models/Budget.js';
 import auth from './middleware/auth.js';
 import jwt from 'jsonwebtoken';
 import upload from './config/cloudinary.js';
@@ -133,13 +135,14 @@ app.get('/api/invitations/:slug', async (req, res) => {
 // RSVP Routes
 app.post('/api/invitations/:slug/rsvp', async (req, res) => {
   try {
-    const { name, status, guests, message } = req.body;
+    const { name, status, guests, message, category } = req.body;
     const rsvp = new RSVP({
       invitationSlug: req.params.slug,
       name,
       status,
       guests,
-      message
+      message,
+      category
     });
     await rsvp.save();
     res.status(201).json(rsvp);
@@ -172,6 +175,78 @@ app.post('/api/invitations/:id/vendors', auth, async (req, res) => {
     const vendor = new Vendor({ ...req.body, invitation: req.params.id });
     await vendor.save();
     res.status(201).json(vendor);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Task Routes
+app.get('/api/invitations/:id/tasks', auth, async (req, res) => {
+  try {
+    const tasks = await Task.find({ invitationId: req.params.id }).sort({ createdAt: 1 });
+    res.json(tasks);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/invitations/:id/tasks', auth, async (req, res) => {
+  try {
+    const task = new Task({ ...req.body, invitationId: req.params.id, owner: req.user._id });
+    await task.save();
+    res.status(201).json(task);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.patch('/api/tasks/:id', auth, async (req, res) => {
+  try {
+    const task = await Task.findOneAndUpdate(
+      { _id: req.params.id, owner: req.user._id },
+      req.body,
+      { new: true }
+    );
+    if (!task) return res.status(404).json({ error: 'Task not found' });
+    res.json(task);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.delete('/api/tasks/:id', auth, async (req, res) => {
+  try {
+    const task = await Task.findOneAndDelete({ _id: req.params.id, owner: req.user._id });
+    if (!task) return res.status(404).json({ error: 'Task not found' });
+    res.json({ message: 'Task deleted' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Budget Routes
+app.get('/api/invitations/:id/budget', auth, async (req, res) => {
+  try {
+    let budget = await Budget.findOne({ invitationId: req.params.id });
+    if (!budget) {
+      budget = new Budget({ invitationId: req.params.id, totalBudget: 0, expenses: [] });
+      await budget.save();
+    }
+    res.json(budget);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/invitations/:id/budget', auth, async (req, res) => {
+  try {
+    const { totalBudget, expenses } = req.body;
+    const budget = await Budget.findOneAndUpdate(
+      { invitationId: req.params.id },
+      { totalBudget, expenses, updatedAt: Date.now() },
+      { new: true, upsert: true }
+    );
+    res.json(budget);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

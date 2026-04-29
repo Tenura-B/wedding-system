@@ -14,7 +14,9 @@ import {
   ChevronLeft,
   Menu,
   X,
-  ExternalLink
+  ExternalLink,
+  ClipboardList,
+  Wallet
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/lib/utils';
@@ -24,6 +26,8 @@ const menuItems = [
   { icon: Users, label: 'Guest List', path: '/guests' },
   { icon: Store, label: 'Vendors', path: '/vendors-managed' },
   { icon: Calendar, label: 'Timeline', path: '/timeline' },
+  { icon: ClipboardList, label: 'Planning', path: '/planning' },
+  { icon: Wallet, label: 'Budget', path: '/budget' },
   { icon: BarChart3, label: 'Analytics', path: '/analytics' },
   { icon: Globe, label: 'Website Preview', path: '/preview-site', isExternal: true },
 ];

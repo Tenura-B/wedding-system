@@ -20,6 +20,8 @@ import { Toaster } from "sonner";
 import DashboardGuests from "./pages/DashboardGuests";
 import DashboardVendors from "./pages/DashboardVendors";
 import DashboardTimeline from "./pages/DashboardTimeline";
+import DashboardPlanning from "./pages/DashboardPlanning";
+import DashboardBudget from "./pages/DashboardBudget";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const token = localStorage.getItem('token');
@@ -69,6 +71,22 @@ export default function App() {
           element={
             <ProtectedRoute>
               <DashboardTimeline />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/planning" 
+          element={
+            <ProtectedRoute>
+              <DashboardPlanning />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/budget" 
+          element={
+            <ProtectedRoute>
+              <DashboardBudget />
             </ProtectedRoute>
           } 
         />

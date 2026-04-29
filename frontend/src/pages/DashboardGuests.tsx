@@ -11,7 +11,8 @@ import {
   CheckCircle2,
   XCircle,
   Clock,
-  UserPlus
+  UserPlus,
+  Tag
 } from "lucide-react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import api from "@/lib/api";
@@ -25,6 +26,7 @@ export default function DashboardGuests() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterCategory, setFilterCategory] = useState<string>("all");
 
   useEffect(() => {
     const fetchInvitations = async () => {
@@ -59,7 +61,8 @@ export default function DashboardGuests() {
   const filteredRsvps = rsvps.filter(rsvp => {
     const matchesSearch = rsvp.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filterStatus === "all" || rsvp.status === filterStatus;
-    return matchesSearch && matchesFilter;
+    const matchesCategory = filterCategory === "all" || rsvp.category === filterCategory;
+    return matchesSearch && matchesFilter && matchesCategory;
   });
 
   const stats = {
@@ -67,6 +70,8 @@ export default function DashboardGuests() {
     attending: rsvps.filter(r => r.status === 'coming').length,
     declined: rsvps.filter(r => r.status === 'declined').length,
     pending: rsvps.filter(r => r.status === 'pending').length,
+    family: rsvps.filter(r => r.category === 'Family').length,
+    friends: rsvps.filter(r => r.category === 'Friend').length,
   };
 
   return (
@@ -136,10 +141,22 @@ export default function DashboardGuests() {
                 onChange={(e) => setFilterStatus(e.target.value)}
                 className="bg-transparent border-none text-sm font-bold text-[#1F1F1F] outline-none"
               >
-                <option value="all">All Status</option>
-                <option value="coming">Attending</option>
-                <option value="declined">Declined</option>
                 <option value="pending">Pending</option>
+              </select>
+            </div>
+
+            <div className="flex items-center gap-2 bg-[#F7F3EF] px-4 py-2 rounded-2xl border border-[#E8D5C8]/30">
+              <Tag className="h-4 w-4 text-[#AF944F]" />
+              <select 
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+                className="bg-transparent border-none text-sm font-bold text-[#1F1F1F] outline-none"
+              >
+                <option value="all">All Categories</option>
+                <option value="Family">Family</option>
+                <option value="Friend">Friend</option>
+                <option value="Work">Work</option>
+                <option value="Other">Other</option>
               </select>
             </div>
             
@@ -164,6 +181,7 @@ export default function DashboardGuests() {
               <thead>
                 <tr className="bg-[#FDFBF7] border-b border-[#E8D5C8]/30">
                   <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest text-neutral-400">Guest Name</th>
+                  <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest text-neutral-400">Category</th>
                   <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest text-neutral-400">Status</th>
                   <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest text-neutral-400">Guests</th>
                   <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest text-neutral-400">Message</th>
@@ -181,6 +199,11 @@ export default function DashboardGuests() {
                         </div>
                         <span className="font-bold text-[#1F1F1F] text-base">{rsvp.name}</span>
                       </div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <span className="px-3 py-1 bg-[#AF944F]/5 text-[#AF944F] text-[10px] font-bold uppercase tracking-widest rounded-lg">
+                        {rsvp.category || 'Guest'}
+                      </span>
                     </td>
                     <td className="px-8 py-6">
                       <div className={cn(

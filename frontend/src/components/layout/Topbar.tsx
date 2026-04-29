@@ -1,5 +1,6 @@
 import React from 'react';
-import { Search, Bell, User, Menu } from 'lucide-react';
+import { Search, Bell, User, Menu, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface TopbarProps {
   onMenuClick: () => void;
@@ -17,7 +18,15 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
           <Menu className="h-6 w-6" />
         </button>
 
-        
+        {/* Back to Home Button */}
+        <Link 
+          to="/" 
+          className="hidden sm:flex items-center gap-2 px-4 py-2 text-neutral-500 hover:text-[#AF944F] transition-all group border border-transparent hover:border-[#AF944F]/20 rounded-xl"
+        >
+          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          <span className="text-xs font-bold uppercase tracking-widest">Back to Site</span>
+        </Link>
+
         <div className="relative max-w-md w-full">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[#AF944F]" />
           <input 
