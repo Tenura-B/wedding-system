@@ -15,6 +15,7 @@ import Budget from './models/Budget.js';
 import auth from './middleware/auth.js';
 import jwt from 'jsonwebtoken';
 import upload from './config/cloudinary.js';
+import aiRouter from './routes/ai.js';
 
 dotenv.config();
 
@@ -34,6 +35,12 @@ mongoose.connect(process.env.MONGODB_URI)
 
 app.use(cors());
 app.use(express.json());
+
+// Log all requests
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
 
 // Health Check
 app.get('/api/health', (req, res) => {
@@ -251,6 +258,8 @@ app.post('/api/invitations/:id/budget', auth, async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+
+app.use('/api/ai', aiRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

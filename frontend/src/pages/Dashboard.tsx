@@ -38,7 +38,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const res = await api.get('/user/dashboard');
+        const res = await api.get('user/dashboard');
         setInvitations(res.data);
         if (res.data.length > 0) {
           setSelectedSlug(res.data[0].slug);
@@ -59,7 +59,7 @@ export default function Dashboard() {
     const fetchRSVPs = async () => {
       setIsRsvpLoading(true);
       try {
-        const res = await api.get(`/invitations/${selectedSlug}/rsvps`);
+        const res = await api.get(`invitations/${selectedSlug}/rsvps`);
         setRsvps(res.data);
       } catch (error) {
         console.error("Error fetching RSVPs:", error);
@@ -72,8 +72,8 @@ export default function Dashboard() {
     const fetchExtraData = async () => {
       try {
         const [tasksRes, budgetRes] = await Promise.all([
-          api.get(`/invitations/${selectedInvitation._id}/tasks`),
-          api.get(`/invitations/${selectedInvitation._id}/budget`)
+          api.get(`invitations/${selectedInvitation._id}/tasks`),
+          api.get(`invitations/${selectedInvitation._id}/budget`)
         ]);
         setTasks(tasksRes.data);
         setBudget(budgetRes.data);
@@ -114,7 +114,10 @@ export default function Dashboard() {
   }
 
   return (
-    <DashboardLayout invitationSlug={selectedSlug || undefined}>
+    <DashboardLayout 
+      invitationSlug={selectedSlug || undefined} 
+      invitationId={selectedInvitation?._id}
+    >
       <div className="space-y-6 md:space-y-10 max-w-[1440px] mx-auto overflow-hidden">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">

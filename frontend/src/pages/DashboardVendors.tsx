@@ -25,7 +25,7 @@ export default function DashboardVendors() {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const res = await api.get('/user/dashboard');
+        const res = await api.get('user/dashboard');
         setInvitations(res.data);
         if (res.data.length > 0) {
           setSelectedInvitation(res.data[0]);
@@ -42,7 +42,10 @@ export default function DashboardVendors() {
   const vendors = selectedInvitation?.vendors || [];
 
   return (
-    <DashboardLayout invitationSlug={selectedInvitation?.slug}>
+    <DashboardLayout 
+      invitationSlug={selectedInvitation?.slug}
+      invitationId={selectedInvitation?._id}
+    >
       <div className="space-y-8 max-w-[1440px] mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">

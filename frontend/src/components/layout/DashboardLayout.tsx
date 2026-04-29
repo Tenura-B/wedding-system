@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import { AnimatePresence, motion } from 'motion/react';
+import AIAssistant from '../ai/AIAssistant';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
   invitationSlug?: string;
+  invitationId?: string;
 }
 
-export default function DashboardLayout({ children, invitationSlug }: DashboardLayoutProps) {
+export default function DashboardLayout({ children, invitationSlug, invitationId }: DashboardLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile
   const [isCollapsed, setIsCollapsed] = useState(false); // Desktop
 
@@ -51,6 +53,9 @@ export default function DashboardLayout({ children, invitationSlug }: DashboardL
           </motion.div>
         </main>
       </div>
+
+      {/* AI Assistant */}
+      <AIAssistant invitationId={invitationId} />
     </div>
   );
 }

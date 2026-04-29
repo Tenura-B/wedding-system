@@ -37,7 +37,7 @@ export default function DashboardBudget() {
   useEffect(() => {
     const fetchInvitations = async () => {
       try {
-        const res = await api.get('/user/dashboard');
+        const res = await api.get('user/dashboard');
         setInvitations(res.data);
         if (res.data.length > 0) {
           setSelectedId(res.data[0]._id);
@@ -56,7 +56,7 @@ export default function DashboardBudget() {
     if (!selectedId) return;
     const fetchBudget = async () => {
       try {
-        const res = await api.get(`/invitations/${selectedId}/budget`);
+        const res = await api.get(`invitations/${selectedId}/budget`);
         setBudget(res.data);
         setTempTotal(res.data.totalBudget.toString());
       } catch (error) {
@@ -69,7 +69,7 @@ export default function DashboardBudget() {
   const updateBudget = async (newTotal?: number, newExpenses?: any[]) => {
     if (!selectedId) return;
     try {
-      const res = await api.post(`/invitations/${selectedId}/budget`, {
+      const res = await api.post(`invitations/${selectedId}/budget`, {
         totalBudget: newTotal !== undefined ? newTotal : budget.totalBudget,
         expenses: newExpenses !== undefined ? newExpenses : budget.expenses
       });
@@ -116,7 +116,10 @@ export default function DashboardBudget() {
   const percentSpent = budget.totalBudget > 0 ? Math.round((totalSpent / budget.totalBudget) * 100) : 0;
 
   return (
-    <DashboardLayout invitationSlug={selectedSlug || undefined}>
+    <DashboardLayout 
+      invitationSlug={selectedSlug || undefined}
+      invitationId={selectedId || undefined}
+    >
       <div className="space-y-10 max-w-[1200px] mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">

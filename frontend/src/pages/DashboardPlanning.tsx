@@ -29,7 +29,7 @@ export default function DashboardPlanning() {
   useEffect(() => {
     const fetchInvitations = async () => {
       try {
-        const res = await api.get('/user/dashboard');
+        const res = await api.get('user/dashboard');
         setInvitations(res.data);
         if (res.data.length > 0) {
           setSelectedSlug(res.data[0].slug);
@@ -48,7 +48,7 @@ export default function DashboardPlanning() {
     if (!selectedId) return;
     const fetchTasks = async () => {
       try {
-        const res = await api.get(`/invitations/${selectedId}/tasks`);
+        const res = await api.get(`invitations/${selectedId}/tasks`);
         setTasks(res.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -62,7 +62,7 @@ export default function DashboardPlanning() {
     if (!newTask.trim() || !selectedId) return;
 
     try {
-      const res = await api.post(`/invitations/${selectedId}/tasks`, {
+      const res = await api.post(`invitations/${selectedId}/tasks`, {
         title: newTask,
         category: "General"
       });
@@ -76,7 +76,7 @@ export default function DashboardPlanning() {
 
   const toggleTask = async (id: string, completed: boolean) => {
     try {
-      const res = await api.patch(`/tasks/${id}`, { completed: !completed });
+      const res = await api.patch(`tasks/${id}`, { completed: !completed });
       setTasks(tasks.map(t => t._id === id ? res.data : t));
     } catch (error) {
       toast.error("Failed to update task");
@@ -85,7 +85,7 @@ export default function DashboardPlanning() {
 
   const deleteTask = async (id: string) => {
     try {
-      await api.delete(`/tasks/${id}`);
+      await api.delete(`tasks/${id}`);
       setTasks(tasks.filter(t => t._id !== id));
       toast.success("Task removed");
     } catch (error) {
@@ -106,7 +106,10 @@ export default function DashboardPlanning() {
     : 0;
 
   return (
-    <DashboardLayout invitationSlug={selectedSlug || undefined}>
+    <DashboardLayout 
+      invitationSlug={selectedSlug || undefined}
+      invitationId={selectedId || undefined}
+    >
       <div className="space-y-8 max-w-[1200px] mx-auto">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">

@@ -32,7 +32,7 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
 
     const fetchData = async () => {
       try {
-        const response = await api.get(`/invitations/${slug}`);
+        const response = await api.get(`invitations/${slug}`);
         setData(response.data);
       } catch (error) {
         console.error("Error fetching invitation:", error);
@@ -82,7 +82,7 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
   const handleRSVP = async (rsvpData: any) => {
     try {
       if (slug) {
-        await api.post(`/invitations/${slug}/rsvp`, rsvpData);
+        await api.post(`invitations/${slug}/rsvp`, rsvpData);
       }
       setIsSubmitted(true);
       toast.success("RSVP submitted successfully!");
