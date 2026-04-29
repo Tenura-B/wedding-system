@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { 
-  Sparkles, 
-  Send, 
-  X, 
-  MessageCircle, 
-  Loader2, 
-  User, 
+import {
+  Sparkles,
+  Send,
+  X,
+  MessageCircle,
+  Loader2,
+  User,
   Bot,
   Minimize2,
   Maximize2,
@@ -124,13 +124,13 @@ export default function AIAssistant({ invitationId }: AIAssistantProps) {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button 
+                <button
                   onClick={() => setIsMinimized(true)}
                   className="p-2 hover:bg-white/10 rounded-full transition-colors"
                 >
                   <Minimize2 className="h-4 w-4" />
                 </button>
-                <button 
+                <button
                   onClick={() => setIsOpen(false)}
                   className="p-2 hover:bg-white/10 rounded-full transition-colors"
                 >
@@ -159,9 +159,9 @@ export default function AIAssistant({ invitationId }: AIAssistantProps) {
                   </div>
                   <div className={cn(
                     "max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed shadow-sm",
-                    msg.role === "user" 
-                      ? "bg-white text-neutral-800 border border-[#E8D5C8]/30 rounded-tr-none" 
-                      : "bg-[#AF944F]/5 text-neutral-900 border border-[#AF944F]/10 rounded-tl-none font-serif italic"
+                    msg.role === "user"
+                      ? "bg-white text-neutral-800 border border-[#E8D5C8]/30 rounded-tr-none"
+                      : "bg-[#AF944F]/5 text-neutral-900 border border-[#AF944F]/10 rounded-tl-none font-['Cormorant_Garamond'] italic font-medium"
                   )}>
                     {msg.content}
                   </div>
