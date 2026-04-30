@@ -72,9 +72,15 @@ export default function Navbar({ isDark }: NavbarProps) {
           ))}
           {user ? (
             <div className="flex items-center gap-6">
-              <Link to="/dashboard" className={linkClasses("/dashboard")}>
-                Dashboard
-              </Link>
+              {user.role === 'superadmin' ? (
+                <Link to="/superadmin" className={linkClasses("/superadmin")}>
+                  Admin Panel
+                </Link>
+              ) : (
+                <Link to="/dashboard" className={linkClasses("/dashboard")}>
+                  Dashboard
+                </Link>
+              )}
               <Button 
                 onClick={handleSignOut}
                 variant="outline"
@@ -126,13 +132,23 @@ export default function Navbar({ isDark }: NavbarProps) {
               ))}
               {user ? (
                 <>
-                  <Link 
-                    to="/dashboard" 
-                    className="text-[16px] uppercase tracking-[2px] font-medium text-ink px-2 py-2 border-b border-ink/5"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Dashboard
-                  </Link>
+                  {user.role === 'superadmin' ? (
+                    <Link 
+                      to="/superadmin" 
+                      className="text-[16px] uppercase tracking-[2px] font-medium text-ink px-2 py-2 border-b border-ink/5"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Admin Panel
+                    </Link>
+                  ) : (
+                    <Link 
+                      to="/dashboard" 
+                      className="text-[16px] uppercase tracking-[2px] font-medium text-ink px-2 py-2 border-b border-ink/5"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                  )}
                   <Button 
                     className="btn-ethereal w-full bg-ink text-white"
                     onClick={handleSignOut}

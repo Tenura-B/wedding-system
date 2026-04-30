@@ -14,6 +14,7 @@ import Vendor from './models/Vendor.js';
 import Task from './models/Task.js';
 import Budget from './models/Budget.js';
 import auth from './middleware/auth.js';
+import adminAuth from './middleware/adminAuth.js';
 import jwt from 'jsonwebtoken';
 import upload from './config/cloudinary.js';
 import aiRouter from './routes/ai.js';
@@ -57,7 +58,7 @@ app.post('/api/auth/register', async (req, res) => {
     await user.save();
     
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.status(201).json({ user: { id: user._id, name: user.name, email: user.email }, token });
+    res.status(201).json({ user: { id: user._id, name: user.name, email: user.email, role: user.role }, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -72,7 +73,7 @@ app.post('/api/auth/login', async (req, res) => {
     }
     
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.json({ user: { id: user._id, name: user.name, email: user.email }, token });
+    res.json({ user: { id: user._id, name: user.name, email: user.email, role: user.role }, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -112,7 +113,7 @@ app.post('/api/auth/google', async (req, res) => {
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.json({
-      user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar },
+      user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar, role: user.role },
       token
     });
   } catch (error) {
@@ -301,6 +302,61 @@ app.post('/api/invitations/:id/budget', auth, async (req, res) => {
     res.json(budget);
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+});
+
+// Admin Routes
+app.get('/api/admin/users', auth, adminAuth, async (req, res) => {
+  try {
+    const users = await User.find({}).sort({ createdAt: -1 });
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.patch('/api/admin/users/:id', auth, adminAuth, async (req, res) => {
+  try {
+    const { role } = req.body;
+    const user = await User.findByIdAndUpdate(req.params.id, { role }, { new: true });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.delete('/api/admin/users/:id', auth, adminAuth, async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    
+    // Also delete their invitations
+    await Invitation.deleteMany({ owner: req.params.id });
+    
+    res.json({ message: 'User and their data deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/admin/stats', auth, adminAuth, async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    const totalInvitations = await Invitation.countDocuments();
+    const totalRSVPs = await RSVP.countDocuments();
+    
+    // Get recent registrations
+    const recentUsers = await User.find({}).sort({ createdAt: -1 }).limit(5);
+    
+    res.json({
+      totalUsers,
+      totalInvitations,
+      totalRSVPs,
+      recentUsers
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 

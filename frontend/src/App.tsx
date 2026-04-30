@@ -13,6 +13,7 @@ import Vendors from "./pages/Vendors";
 import VendorProfile from "./pages/VendorProfile";
 import Dashboard from "./pages/Dashboard";
 import TemplatePreviewPage from "./pages/TemplatePreviewPage";
+import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import { Navigate } from "react-router-dom";
 import { ScrollToTop } from "./components/layout/ScrollToTop";
 import { Toaster } from "sonner";
@@ -26,6 +27,17 @@ import DashboardBudget from "./pages/DashboardBudget";
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const token = localStorage.getItem('token');
   if (!token) return <Navigate to="/" replace />;
+  return <>{children}</>;
+};
+
+const SuperAdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  
+  if (!token || user.role !== 'superadmin') {
+    return <Navigate to="/" replace />;
+  }
+  
   return <>{children}</>;
 };
 
@@ -88,6 +100,14 @@ export default function App() {
             <ProtectedRoute>
               <DashboardBudget />
             </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/superadmin" 
+          element={
+            <SuperAdminRoute>
+              <SuperAdminDashboard />
+            </SuperAdminRoute>
           } 
         />
       </Routes>

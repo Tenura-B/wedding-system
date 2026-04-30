@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: false }, // Optional — Google users have no password
   googleId: { type: String, sparse: true, index: true }, // Links account to Google
   avatar: { type: String }, // Google profile picture URL
+  role: { type: String, enum: ['user', 'admin', 'superadmin'], default: 'user' },
   createdAt: { type: Date, default: Date.now }
 });
 
