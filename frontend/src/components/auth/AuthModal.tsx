@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "@/lib/api";
 import { toast } from "sonner";
@@ -13,8 +13,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Mail, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+
+// Extend Window type for Google Identity Services
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (config: object) => void;
+          renderButton: (element: HTMLElement, config: object) => void;
+          prompt: () => void;
+        };
+      };
+    };
+  }
+}
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -25,13 +40,70 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("login");
   const [isLoading, setIsLoading] = useState(false);
-  
+  const googleButtonRef = useRef<HTMLDivElement>(null);
+
   // Form States
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: ""
   });
+
+  // Handle Google credential response
+  const handleGoogleCredential = async (response: { credential: string }) => {
+    setIsLoading(true);
+    try {
+      const res = await api.post('/auth/google', { credential: response.credential });
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('user', JSON.stringify(res.data.user));
+      toast.success("Welcome! Signed in with Google 🎉");
+      onClose();
+      navigate('/dashboard');
+      window.location.reload();
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || "Google sign-in failed");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Initialize Google Identity Services when modal opens
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const initGoogle = () => {
+      if (!window.google || !googleButtonRef.current) return;
+
+      window.google.accounts.id.initialize({
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredential,
+      });
+
+      // Render the official Google branded button
+      window.google.accounts.id.renderButton(googleButtonRef.current, {
+        type: "standard",
+        shape: "rectangular",
+        theme: "outline",
+        text: "signin_with",
+        size: "large",
+        logo_alignment: "center",
+        width: googleButtonRef.current.offsetWidth || 380,
+      });
+    };
+
+    // Wait for GSI script to load if it hasn't yet
+    if (window.google) {
+      initGoogle();
+    } else {
+      const interval = setInterval(() => {
+        if (window.google) {
+          clearInterval(interval);
+          initGoogle();
+        }
+      }, 100);
+      return () => clearInterval(interval);
+    }
+  }, [isOpen, activeTab]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id.replace('reg-', '')]: e.target.value });
@@ -42,16 +114,15 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     try {
       const endpoint = isRegister ? '/auth/register' : '/auth/login';
       const payload = isRegister ? formData : { email: formData.email, password: formData.password };
-      
+
       const res = await api.post(endpoint, payload);
-      
+
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
-      
+
       toast.success(isRegister ? "Account created successfully!" : "Welcome back!");
       onClose();
-      
-      // Redirect to dashboard and refresh to update navbar
+
       navigate('/dashboard');
       window.location.reload();
     } catch (error: any) {
@@ -93,11 +164,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   <div className="space-y-3">
                     <div className="space-y-1.5">
                       <Label htmlFor="email" className="text-xs font-medium ml-1">Email Address</Label>
-                      <Input 
-                        id="email" 
-                        type="email" 
-                        placeholder="name@example.com" 
-                        className="h-10 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all text-sm" 
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="name@example.com"
+                        className="h-10 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all text-sm"
                         value={formData.email}
                         onChange={handleInputChange}
                       />
@@ -107,15 +178,15 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                         <Label htmlFor="password" className="text-xs font-medium">Password</Label>
                         <button className="text-[10px] text-neutral-500 hover:text-black">Forgot password?</button>
                       </div>
-                      <Input 
-                        id="password" 
-                        type="password" 
-                        className="h-10 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all text-sm" 
+                      <Input
+                        id="password"
+                        type="password"
+                        className="h-10 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all text-sm"
                         value={formData.password}
                         onChange={handleInputChange}
                       />
                     </div>
-                    <Button 
+                    <Button
                       onClick={() => handleAuth(false)}
                       disabled={isLoading}
                       className="w-full h-10 rounded-xl bg-black text-white hover:bg-neutral-800 transition-all shadow-lg shadow-black/5 mt-1 text-sm"
@@ -129,36 +200,36 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   <div className="space-y-3">
                     <div className="space-y-1.5">
                       <Label htmlFor="name" className="text-xs font-medium ml-1">Full Name</Label>
-                      <Input 
-                        id="name" 
-                        placeholder="Katherine Pierce" 
-                        className="h-10 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all text-sm" 
+                      <Input
+                        id="name"
+                        placeholder="Katherine Pierce"
+                        className="h-10 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all text-sm"
                         value={formData.name}
                         onChange={handleInputChange}
                       />
                     </div>
                     <div className="space-y-1.5">
                       <Label htmlFor="reg-email" className="text-xs font-medium ml-1">Email Address</Label>
-                      <Input 
-                        id="reg-email" 
-                        type="email" 
-                        placeholder="name@example.com" 
-                        className="h-10 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all text-sm" 
+                      <Input
+                        id="reg-email"
+                        type="email"
+                        placeholder="name@example.com"
+                        className="h-10 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all text-sm"
                         value={formData.email}
                         onChange={handleInputChange}
                       />
                     </div>
                     <div className="space-y-1.5">
                       <Label htmlFor="reg-password" className="text-xs font-medium ml-1">Password</Label>
-                      <Input 
-                        id="reg-password" 
-                        type="password" 
-                        className="h-10 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all text-sm" 
+                      <Input
+                        id="reg-password"
+                        type="password"
+                        className="h-10 rounded-xl border-neutral-200 bg-white/50 focus:bg-white transition-all text-sm"
                         value={formData.password}
                         onChange={handleInputChange}
                       />
                     </div>
-                    <Button 
+                    <Button
                       onClick={() => handleAuth(true)}
                       disabled={isLoading}
                       className="w-full h-10 rounded-xl bg-black text-white hover:bg-neutral-800 transition-all shadow-lg shadow-black/5 mt-1 text-sm"
@@ -171,22 +242,19 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             </AnimatePresence>
           </Tabs>
 
+          {/* Divider */}
           <div className="relative my-4">
             <div className="absolute inset-0 flex items-center">
-               <span className="w-full border-t border-neutral-200"></span>
+              <span className="w-full border-t border-neutral-200"></span>
             </div>
             <div className="relative flex justify-center text-[10px] uppercase font-medium">
-               <span className="bg-white px-2 text-muted-foreground whitespace-nowrap">Or continue with</span>
+              <span className="bg-white px-2 text-muted-foreground whitespace-nowrap">Or continue with</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" className="h-10 rounded-xl border-neutral-200 bg-white hover:bg-neutral-50 transition-all font-medium text-xs">
-               Google
-            </Button>
-            <Button variant="outline" className="h-10 rounded-xl border-neutral-200 bg-white hover:bg-neutral-50 transition-all font-medium text-xs">
-               Apple
-            </Button>
+          {/* Google Sign-In Button rendered by Google Identity Services SDK */}
+          <div className="flex justify-center w-full overflow-hidden rounded-xl">
+            <div ref={googleButtonRef} className="w-full" />
           </div>
 
           <p className="mt-4 text-center text-[10px] text-muted-foreground leading-relaxed">

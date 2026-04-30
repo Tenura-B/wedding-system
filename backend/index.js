@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import dns from 'node:dns';
+import { OAuth2Client } from 'google-auth-library';
 
 // Fix for querySrv ECONNREFUSED on Windows
 dns.setServers(['8.8.8.8', '8.8.4.4']);
@@ -21,6 +22,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
@@ -73,6 +75,49 @@ app.post('/api/auth/login', async (req, res) => {
     res.json({ user: { id: user._id, name: user.name, email: user.email }, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+});
+
+// Google OAuth Route
+app.post('/api/auth/google', async (req, res) => {
+  try {
+    const { credential } = req.body;
+    if (!credential) {
+      return res.status(400).json({ error: 'Google credential is required' });
+    }
+
+    // Verify the ID token with Google
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const { sub: googleId, email, name, picture } = payload;
+
+    // Find existing user by googleId, or by email (to link accounts)
+    let user = await User.findOne({ $or: [{ googleId }, { email }] });
+
+    if (user) {
+      // Link Google account if signing in with same email for the first time via Google
+      if (!user.googleId) {
+        user.googleId = googleId;
+        user.avatar = picture;
+        await user.save();
+      }
+    } else {
+      // Create a brand new Google user (no password)
+      user = new User({ name, email, googleId, avatar: picture });
+      await user.save();
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    res.json({
+      user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar },
+      token
+    });
+  } catch (error) {
+    console.error('Google auth error:', error);
+    res.status(401).json({ error: 'Invalid Google credential' });
   }
 });
 
