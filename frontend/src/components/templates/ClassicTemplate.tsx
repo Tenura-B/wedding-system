@@ -5,13 +5,11 @@ import {
   MapPin,
   Clock,
   Heart,
-  Gift,
   Check,
-  ChevronRight,
   Music,
   Camera
 } from "lucide-react";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, subDays } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,12 +26,32 @@ export default function ClassicTemplate({ data, timeLeft, onRSVP, isSubmitted }:
   const [isOpened, setIsOpened] = useState(false);
   const [rsvpForm, setRsvpForm] = useState({ name: "", status: "coming", guests: 1, message: "" });
 
-  const agenda = [
+  const agenda = data.agenda?.length > 0 ? data.agenda.map((item: any) => {
+    // Map string icons to Lucide components
+    const iconMap: Record<string, any> = { Heart, Music, Calendar, Camera, Clock };
+    return {
+      ...item,
+      icon: iconMap[item.icon] || Heart
+    };
+  }) : [
     { time: data.time || "04:00 PM", title: "Ceremony Begins", description: "Exchange of vows at the Main Chapel", icon: Heart },
     { time: "05:30 PM", title: "Cocktail Hour", description: "Drinks and appetizers on the Sunset Terrace", icon: Music },
     { time: "07:00 PM", title: "Reception & Dinner", description: "Grand Banquet Hall", icon: Calendar },
     { time: "09:00 PM", title: "Party & Dancing", description: "Celebration till midnight", icon: Camera }
   ];
+
+  const galleryImages = data.gallery?.length > 0 ? data.gallery : [
+    "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800",
+    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800",
+    "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=800",
+    "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800",
+    "https://images.unsplash.com/photo-1544078751-58fee2d8a03b?w=800"
+  ];
+
+  const rsvpByDate = data.rsvpDate 
+    ? format(parseISO(data.rsvpDate), 'MMMM d, yyyy')
+    : (data.date ? format(subDays(parseISO(data.date), 14), 'MMMM d, yyyy') : 'September 14, 2026');
+
 
   const getOrdinal = (n: number) => {
     const s = ['th', 'st', 'nd', 'rd'];
@@ -73,7 +91,7 @@ export default function ClassicTemplate({ data, timeLeft, onRSVP, isSubmitted }:
               initial={{ opacity: 0, x: -50, y: -50, rotate: -15 }}
               animate={{ opacity: 1, x: 0, y: 0, rotate: -5 }}
               transition={{ delay: 0.4, duration: 1.2, ease: "easeOut" }}
-              className="fixed left-[-2%] md:left-[-5%] top-[5%] md:top-[8%] w-[300px] md:w-[32vw] max-w-[650px] min-w-[400px] aspect-[3/4] z-10 overflow-hidden rounded-[2.5rem]"
+              className="absolute left-0 md:left-[-5%] top-[15%] min-[390px]:top-[20%] min-[414px]:top-[15%] md:top-[8%] w-[58vw] min-[390px]:w-[65vw] md:w-[32vw] max-w-[650px] aspect-[3/4] z-10 overflow-hidden rounded-[2.5rem]"
             >
               <img src="/images/left.png" className="w-full h-full object-cover md:hidden" alt="Wedding Left" />
               <img src="/images/d1.png" className="w-full h-full object-cover hidden md:block" alt="Wedding Left Desktop" />
@@ -84,7 +102,7 @@ export default function ClassicTemplate({ data, timeLeft, onRSVP, isSubmitted }:
               initial={{ opacity: 0, x: 50, y: 50, rotate: 15 }}
               animate={{ opacity: 1, x: 0, y: 0, rotate: 5 }}
               transition={{ delay: 0.6, duration: 1.2, ease: "easeOut" }}
-              className="fixed right-[-2%] md:right-[-5%] bottom-[15%] md:bottom-[8%] w-[300px] md:w-[32vw] max-w-[650px] min-w-[400px] aspect-[3/4] z-10 overflow-hidden rounded-[2.5rem]"
+              className="absolute right-0 md:right-[-5%] bottom-[20%] md:bottom-[8%] w-[58vw] min-[390px]:w-[65vw] md:w-[32vw] max-w-[650px] aspect-[3/4] z-10 overflow-hidden rounded-[2.5rem]"
             >
               <img src="/images/right.png" className="w-full h-full object-cover md:hidden" alt="Wedding Right" />
               <img src="/images/d2.png" className="w-full h-full object-cover hidden md:block" alt="Wedding Right Desktop" />
@@ -95,7 +113,7 @@ export default function ClassicTemplate({ data, timeLeft, onRSVP, isSubmitted }:
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2, duration: 1.5, ease: "easeOut" }}
-              className="fixed right-0 top-0 w-[92%] h-full z-0 md:hidden pointer-events-none"
+              className="absolute right-0 top-0 w-[92%] h-full z-0 md:hidden pointer-events-none"
             >
               <img src="/images/env.png" className="w-full h-full object-cover opacity-40" alt="Envelope Background" />
             </motion.div>
@@ -105,7 +123,7 @@ export default function ClassicTemplate({ data, timeLeft, onRSVP, isSubmitted }:
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5, duration: 1 }}
-              className="fixed right-0 top-0 w-[100px] z-10 md:hidden pointer-events-none"
+              className="absolute right-0 top-0 w-[100px] min-[414px]:w-[75px] z-10 md:hidden pointer-events-none"
             >
               <img src="/images/f1.png" className="w-full h-auto" alt="Flower Top" />
             </motion.div>
@@ -114,7 +132,7 @@ export default function ClassicTemplate({ data, timeLeft, onRSVP, isSubmitted }:
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.6, duration: 1 }}
-              className="fixed right-0 bottom-0 w-[150px] z-10 md:hidden pointer-events-none"
+              className="absolute right-0 bottom-0 w-[150px] z-10 md:hidden pointer-events-none"
             >
               <img src="/images/f2.png" className="w-full h-auto" alt="Flower Bottom" />
             </motion.div>
@@ -433,7 +451,7 @@ export default function ClassicTemplate({ data, timeLeft, onRSVP, isSubmitted }:
                   className="relative rounded-[3rem] overflow-hidden mb-12 max-w-5xl mx-auto border-[12px] border-white group"
                 >
                   <img
-                    src="/images/venue.webp"
+                    src={data.venueImage || "/images/venue.webp"}
                     className="w-full h-[300px] md:h-[500px] object-cover transition-transform duration-1000 group-hover:scale-105"
                     alt="Venue"
                   />
@@ -509,15 +527,8 @@ export default function ClassicTemplate({ data, timeLeft, onRSVP, isSubmitted }:
                   <h2 className="text-5xl md:text-7xl font-serif italic">Capturing Memories</h2>
                 </div>
 
-                {/* Desktop Grid */}
                 <div className="hidden md:block columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
-                  {[
-                    "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800",
-                    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800",
-                    "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=800",
-                    "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800",
-                    "https://images.unsplash.com/photo-1544078751-58fee2d8a03b?w=800"
-                  ].map((src, i) => (
+                  {galleryImages.map((src: string, i: number) => (
                     <motion.div
                       key={i}
                       whileHover={{ y: -10 }}
@@ -530,13 +541,7 @@ export default function ClassicTemplate({ data, timeLeft, onRSVP, isSubmitted }:
 
                 {/* Mobile Carousel */}
                 <div className="md:hidden flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 -mx-6 px-6 scrollbar-hide scroll-smooth">
-                  {[
-                    "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800",
-                    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800",
-                    "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=800",
-                    "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800",
-                    "https://images.unsplash.com/photo-1544078751-58fee2d8a03b?w=800"
-                  ].map((src, i) => (
+                  {galleryImages.map((src: string, i: number) => (
                     <motion.div
                       key={i}
                       className="min-w-[85vw] snap-center rounded-[2rem] overflow-hidden border border-[#E8D5C8]/20 shadow-lg"
@@ -572,7 +577,7 @@ export default function ClassicTemplate({ data, timeLeft, onRSVP, isSubmitted }:
                     <div className="text-center space-y-4">
                       <span className="text-xs font-bold uppercase tracking-[6px] text-[#991B1B]">RSVP</span>
                       <h2 className="text-5xl md:text-7xl font-serif italic">Will You Join Us?</h2>
-                      <p className="text-neutral-500 font-light italic">Please kindly respond by September 14, 2026</p>
+                      <p className="text-neutral-500 font-light italic">Please kindly respond by {rsvpByDate}</p>
                     </div>
 
                     <form
