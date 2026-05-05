@@ -33,11 +33,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const SuperAdminRoute = ({ children }: { children: React.ReactNode }) => {
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user') || '{}');
-  
+
   if (!token || user.role !== 'superadmin') {
     return <Navigate to="/" replace />;
   }
-  
+
   return <>{children}</>;
 };
 
@@ -54,61 +54,61 @@ export default function App() {
         <Route path="/invite/:slug" element={<InvitationView />} />
         <Route path="/vendors" element={<Vendors />} />
         <Route path="/vendors/:id" element={<VendorProfile />} />
-        <Route 
-          path="/dashboard" 
+        <Route
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/guests" 
+        <Route
+          path="/guests"
           element={
             <ProtectedRoute>
               <DashboardGuests />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/vendors-managed" 
+        <Route
+          path="/vendors-managed"
           element={
             <ProtectedRoute>
               <DashboardVendors />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/timeline" 
+        <Route
+          path="/timeline"
           element={
             <ProtectedRoute>
               <DashboardTimeline />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/planning" 
+        <Route
+          path="/planning"
           element={
             <ProtectedRoute>
               <DashboardPlanning />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/budget" 
+        <Route
+          path="/budget"
           element={
             <ProtectedRoute>
               <DashboardBudget />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/superadmin" 
+        <Route
+          path="/superadmin"
           element={
             <SuperAdminRoute>
               <SuperAdminDashboard />
             </SuperAdminRoute>
-          } 
+          }
         />
       </Routes>
     </Router>

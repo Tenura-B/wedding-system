@@ -11,7 +11,8 @@ import {
   MoreVertical,
   Activity,
   UserCheck,
-  Calendar
+  Calendar,
+  Key
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -54,6 +55,22 @@ export default function SuperAdminDashboard() {
       loadData();
     } catch (error) {
       toast.error("Failed to update role");
+    }
+  };
+
+  const handleResetPassword = async (userId: string) => {
+    const newPassword = prompt("Enter new password for this user (min 6 characters):");
+    if (!newPassword) return;
+    if (newPassword.length < 6) {
+      toast.error("Password too short");
+      return;
+    }
+
+    try {
+      await api.patch(`/admin/users/${userId}/reset-password`, { password: newPassword });
+      toast.success("Password reset successfully");
+    } catch (error) {
+      toast.error("Failed to reset password");
     }
   };
 
@@ -184,14 +201,24 @@ export default function SuperAdminDashboard() {
                               <option value="admin">Admin</option>
                               <option value="superadmin">SuperAdmin</option>
                             </select>
-                            <Button 
-                              variant="ghost" 
-                              size="icon" 
-                              className="rounded-full text-rose-500 hover:text-rose-600 hover:bg-rose-50"
-                              onClick={() => handleDeleteUser(user._id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="rounded-full text-blue-500 hover:text-blue-600 hover:bg-blue-50"
+                                onClick={() => handleResetPassword(user._id)}
+                                title="Reset Password"
+                              >
+                                <Key className="h-4 w-4" />
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="rounded-full text-rose-500 hover:text-rose-600 hover:bg-rose-50"
+                                onClick={() => handleDeleteUser(user._id)}
+                                title="Delete User"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
                           </div>
                         </td>
                       </tr>

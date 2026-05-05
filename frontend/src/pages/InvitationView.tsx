@@ -6,9 +6,7 @@ import { toast } from "sonner";
 
 // Import New Template Components
 import ClassicTemplate from "@/components/templates/ClassicTemplate";
-import MinimalTemplate from "@/components/templates/MinimalTemplate";
-import FloralTemplate from "@/components/templates/FloralTemplate";
-import LuxuryTemplate from "@/components/templates/LuxuryTemplate";
+import ComingSoonTemplate from "@/components/templates/ComingSoonTemplate";
 
 interface InvitationViewProps {
   previewData?: any;
@@ -95,7 +93,7 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#AF944F]/20 border-t-[#AF944F] rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-[#991B1B]/20 border-t-[#991B1B] rounded-full animate-spin" />
       </div>
     );
   }
@@ -112,11 +110,11 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
 
   switch (data.template) {
     case "minimal":
-      return <MinimalTemplate {...templateProps} />;
+      return <ComingSoonTemplate templateName="Modern Minimal" />;
     case "floral":
-      return <FloralTemplate {...templateProps} />;
+      return <ComingSoonTemplate templateName="Floral Romantic" />;
     case "luxury":
-      return <LuxuryTemplate {...templateProps} />;
+      return <ComingSoonTemplate templateName="Dark Luxury" />;
     case "classic":
     default:
       return <ClassicTemplate {...templateProps} />;

@@ -52,57 +52,7 @@ export default function TemplatePreviewPage() {
          <InvitationView previewData={data} />
       </div>
 
-      {/* Floating Action Bar */}
-      <motion.div 
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.5, duration: 0.8 }}
-        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4 p-3 pr-4 rounded-full bg-white/80 backdrop-blur-2xl border border-white/50 shadow-[0_20px_50px_rgba(0,0,0,0.2)]"
-      >
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          asChild
-          className="rounded-full w-12 h-12 bg-neutral-100 hover:bg-neutral-200 text-black shadow-sm"
-        >
-          <Link to={isDraft ? "/create" : "/templates"}>
-            <X className="h-4 w-4" />
-          </Link>
-        </Button>
-        
-        <div className="h-8 w-[1px] bg-neutral-200/50 mx-1" />
-        
-        <div className="hidden md:block px-3 py-1">
-          <p className="text-[10px] uppercase font-bold tracking-widest text-neutral-400 leading-none mb-1">
-            {isDraft ? 'Draft Preview' : 'Live Preview'}
-          </p>
-          <p className="text-sm font-medium text-neutral-800 leading-none capitalize">
-            {isDraft ? `${data.template} Style` : `${id} Template`}
-          </p>
-        </div>
 
-        {isDraft ? (
-           <Button 
-           size="lg" 
-           onClick={() => window.close()}
-           className="h-12 px-8 rounded-full bg-black text-white hover:bg-neutral-800 text-sm shadow-xl group transition-all duration-500"
-         >
-           Finish Preview
-           <X className="ml-2 h-4 w-4" />
-         </Button>
-        ) : (
-          <Button 
-            size="lg" 
-            asChild
-            className="h-12 px-8 rounded-full bg-black text-white hover:bg-neutral-800 text-sm shadow-xl group transition-all duration-500"
-          >
-            <Link to={`/create?template=${id}`}>
-              Start Creating With This
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </Button>
-        )}
-      </motion.div>
     </div>
   );
 }
