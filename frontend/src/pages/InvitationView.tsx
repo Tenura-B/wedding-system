@@ -7,6 +7,7 @@ import { toast } from "sonner";
 // Import New Template Components
 import ClassicTemplate from "@/components/templates/ClassicTemplate";
 import ComingSoonTemplate from "@/components/templates/ComingSoonTemplate";
+import MinimalTemplate from "@/components/templates/MinimalTemplate";
 
 interface InvitationViewProps {
   previewData?: any;
@@ -110,7 +111,7 @@ export default function InvitationView({ previewData }: InvitationViewProps) {
 
   switch (data.template) {
     case "minimal":
-      return <ComingSoonTemplate templateName="Modern Minimal" />;
+      return <MinimalTemplate {...templateProps} />;
     case "floral":
       return <ComingSoonTemplate templateName="Floral Romantic" />;
     case "luxury":
