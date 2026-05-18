@@ -57,16 +57,6 @@ export default function MinimalTemplate({ data, timeLeft, onRSVP, isSubmitted }:
     return s[(v - 20) % 10] || s[v] || s[0];
   };
 
-  const safeDate = React.useMemo(() => {
-    if (!data?.date) return null;
-    try {
-      const d = new Date(data.date);
-      return isNaN(d.getTime()) ? null : d;
-    } catch {
-      return null;
-    }
-  }, [data?.date]);
-
   return (
     <div className="font-sans bg-white text-black">
       <AnimatePresence mode="wait">
@@ -176,16 +166,16 @@ export default function MinimalTemplate({ data, timeLeft, onRSVP, isSubmitted }:
                             className="font-sans font-black leading-none"
                             style={{ fontSize: 'clamp(50px, 15vw, 120px)' }}
                           >
-                            {safeDate ? format(safeDate, 'd') : '12'}
+                            {data.date ? format(parseISO(data.date), 'd') : '12'}
                           </span>
                           <div className="flex flex-col items-start mt-2 md:mt-5 ml-1">
                             <span className="text-xs md:text-base font-black leading-none uppercase">
-                              {safeDate
-                                ? getOrdinal(parseInt(format(safeDate, 'd')))
+                              {data.date
+                                ? getOrdinal(parseInt(format(parseISO(data.date), 'd')))
                                 : 'th'}
                             </span>
                             <span className="text-[8px] md:text-[11px] font-medium mt-1 whitespace-nowrap opacity-80 uppercase tracking-widest">
-                              {safeDate ? format(safeDate, 'EEEE') : 'Saturday'}
+                              {data.date ? format(parseISO(data.date), 'EEEE') : 'Saturday'}
                             </span>
                           </div>
                         </div>
@@ -193,7 +183,7 @@ export default function MinimalTemplate({ data, timeLeft, onRSVP, isSubmitted }:
                           className="font-sans font-bold -mt-1 md:-mt-2 uppercase tracking-widest"
                           style={{ fontSize: 'clamp(14px, 4vw, 28px)' }}
                         >
-                          {safeDate ? format(safeDate, 'MMMM yyyy') : 'December 2026'}
+                          {data.date ? format(parseISO(data.date), 'MMMM yyyy') : 'December 2026'}
                         </p>
                       </div>
                     </motion.div>
