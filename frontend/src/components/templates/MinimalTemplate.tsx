@@ -157,9 +157,9 @@ export default function MinimalTemplate({ data, timeLeft, onRSVP, isSubmitted }:
                     <motion.div 
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
-                      className="relative top-[8rem] sm:top-[10rem] md:top-[2rem] flex items-center justify-start md:justify-center -ml-2 sm:-ml-4 md:ml-0 gap-4 md:gap-8"
+                      className="relative top-[8rem] sm:top-[10rem] md:top-[2rem] flex items-center justify-start md:justify-center -ml-2 sm:-ml-4 md:-ml-12 gap-4 md:gap-8"
                     >
-                      <img src="/MinimalImage/clock.png" className="w-[220px] sm:w-[280px] md:w-[600px] h-auto object-contain mix-blend-screen opacity-90" />
+                      <img src="/MinimalImage/clock.png" className="w-[220px] sm:w-[280px] md:w-[600px] h-auto object-contain mix-blend-screen opacity-90 md:-translate-x-72" />
                       <div className="flex flex-col items-center text-white mt-4 md:mt-10">
                         <div className="flex items-start justify-center">
                           <span
