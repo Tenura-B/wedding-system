@@ -57,6 +57,16 @@ export default function MinimalTemplate({ data, timeLeft, onRSVP, isSubmitted }:
     return s[(v - 20) % 10] || s[v] || s[0];
   };
 
+  const safeDate = React.useMemo(() => {
+    if (!data?.date) return null;
+    try {
+      const d = new Date(data.date);
+      return isNaN(d.getTime()) ? null : d;
+    } catch {
+      return null;
+    }
+  }, [data?.date]);
+
   return (
     <div className="font-sans bg-white text-black">
       <AnimatePresence mode="wait">
@@ -157,25 +167,25 @@ export default function MinimalTemplate({ data, timeLeft, onRSVP, isSubmitted }:
                     <motion.div 
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
-                      className="relative top-[8rem] sm:top-[10rem] md:top-[2rem] flex items-center justify-start md:justify-center -ml-2 sm:-ml-4 md:ml-0 gap-4 md:gap-8"
+                      className="relative top-[8rem] sm:top-[10rem] md:top-[2rem] flex items-center justify-start md:justify-center -ml-2 sm:-ml-4 md:-ml-12 gap-4 md:gap-8"
                     >
-                      <img src="/MinimalImage/clock.png" className="w-[220px] sm:w-[280px] md:w-[600px] h-auto object-contain mix-blend-screen opacity-90" />
+                      <img src="/MinimalImage/clock.png" className="w-[220px] sm:w-[280px] md:w-[600px] h-auto object-contain mix-blend-screen opacity-90 md:-translate-x-72" />
                       <div className="flex flex-col items-center text-white mt-4 md:mt-10">
                         <div className="flex items-start justify-center">
                           <span
                             className="font-sans font-black leading-none"
                             style={{ fontSize: 'clamp(50px, 15vw, 120px)' }}
                           >
-                            {data.date ? format(parseISO(data.date), 'd') : '12'}
+                            {safeDate ? format(safeDate, 'd') : '12'}
                           </span>
                           <div className="flex flex-col items-start mt-2 md:mt-5 ml-1">
                             <span className="text-xs md:text-base font-black leading-none uppercase">
-                              {data.date
-                                ? getOrdinal(parseInt(format(parseISO(data.date), 'd')))
+                              {safeDate
+                                ? getOrdinal(parseInt(format(safeDate, 'd')))
                                 : 'th'}
                             </span>
                             <span className="text-[8px] md:text-[11px] font-medium mt-1 whitespace-nowrap opacity-80 uppercase tracking-widest">
-                              {data.date ? format(parseISO(data.date), 'EEEE') : 'Saturday'}
+                              {safeDate ? format(safeDate, 'EEEE') : 'Saturday'}
                             </span>
                           </div>
                         </div>
@@ -183,7 +193,7 @@ export default function MinimalTemplate({ data, timeLeft, onRSVP, isSubmitted }:
                           className="font-sans font-bold -mt-1 md:-mt-2 uppercase tracking-widest"
                           style={{ fontSize: 'clamp(14px, 4vw, 28px)' }}
                         >
-                          {data.date ? format(parseISO(data.date), 'MMMM yyyy') : 'December 2026'}
+                          {safeDate ? format(safeDate, 'MMMM yyyy') : 'December 2026'}
                         </p>
                       </div>
                     </motion.div>
