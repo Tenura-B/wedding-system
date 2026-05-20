@@ -125,10 +125,10 @@ export default function DashboardBudget() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-[#AF944F]/10 rounded-lg text-[#AF944F]">
+              <div className="p-2 bg-[#006884]/10 rounded-lg text-[#006884]">
                 <Wallet className="h-5 w-5" />
               </div>
-              <span className="text-xs font-bold uppercase tracking-[2px] text-[#AF944F]">Finance Manager</span>
+              <span className="text-xs font-bold uppercase tracking-[2px] text-[#006884]">Finance Manager</span>
             </div>
             <h1 className="text-4xl font-bold text-[#1F1F1F] mb-1">Wedding Budget</h1>
             <p className="text-neutral-500 font-medium font-serif italic text-lg">Keep your wedding finances in perfect harmony.</p>
@@ -141,12 +141,12 @@ export default function DashboardBudget() {
                   type="number"
                   value={tempTotal}
                   onChange={(e) => setTempTotal(e.target.value)}
-                  className="w-40 h-14 bg-white border-2 border-[#AF944F] rounded-2xl px-4 text-xl font-bold text-[#1F1F1F] outline-none"
+                  className="w-40 h-14 bg-white border-2 border-[#006884] rounded-2xl px-4 text-xl font-bold text-[#1F1F1F] outline-none"
                   autoFocus
                 />
                 <button
                   onClick={handleSetTotal}
-                  className="px-6 bg-[#AF944F] text-white rounded-2xl font-bold hover:bg-[#967d3f] transition-all"
+                  className="px-6 bg-[#006884] text-white rounded-2xl font-bold hover:bg-[#967d3f] transition-all"
                 >
                   Save
                 </button>
@@ -154,9 +154,9 @@ export default function DashboardBudget() {
             ) : (
               <button
                 onClick={() => setIsEditingTotal(true)}
-                className="group flex items-center gap-4 bg-white p-2 pr-8 rounded-[2rem] border border-[#E8D5C8]/50 shadow-sm hover:border-[#AF944F]/30 transition-all"
+                className="group flex items-center gap-4 bg-white p-2 pr-8 rounded-[2rem] border border-[#E8D5C8]/50 shadow-sm hover:border-[#006884]/30 transition-all"
               >
-                <div className="w-12 h-12 rounded-full bg-[#FDFBF7] flex items-center justify-center text-[#AF944F] transition-all group-hover:bg-[#AF944F] group-hover:text-white">
+                <div className="w-12 h-12 rounded-full bg-[#FDFBF7] flex items-center justify-center text-[#006884] transition-all group-hover:bg-[#006884] group-hover:text-white">
                   <Settings2 className="h-5 w-5" />
                 </div>
                 <div className="text-left">
@@ -170,7 +170,7 @@ export default function DashboardBudget() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="dash-card p-8 border-none !bg-emerald-500/10 shadow-xl shadow-[#AF944F]/5 relative overflow-hidden">
+          <div className="dash-card p-8 border-none !bg-emerald-500/10 shadow-xl shadow-[#006884]/5 relative overflow-hidden">
             <div className="flex items-center justify-between mb-8">
               <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600">
                 <DollarSign className="h-7 w-7" />
@@ -198,7 +198,7 @@ export default function DashboardBudget() {
             </div>
           </div>
 
-          <div className="dash-card p-8 border-none !bg-[#AF944F] text-white shadow-xl shadow-[#AF944F]/20 relative overflow-hidden group">
+          <div className="dash-card p-8 border-none !bg-[#006884] text-white shadow-xl shadow-[#006884]/20 relative overflow-hidden group">
             <TrendingUp className="absolute -right-4 -bottom-4 h-32 w-32 opacity-10 rotate-12 transition-transform group-hover:scale-110" />
             <div className="flex items-center justify-between mb-8 relative z-10">
               <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center text-white">
@@ -263,7 +263,7 @@ export default function DashboardBudget() {
                         <span className="font-bold text-[#1F1F1F]">{exp.name}</span>
                       </td>
                       <td className="px-8 py-6">
-                        <span className="px-3 py-1 bg-[#AF944F]/5 text-[#AF944F] text-[10px] font-bold uppercase tracking-widest rounded-lg">
+                        <span className="px-3 py-1 bg-[#006884]/5 text-[#006884] text-[10px] font-bold uppercase tracking-widest rounded-lg">
                           {exp.category}
                         </span>
                       </td>
@@ -309,7 +309,7 @@ export default function DashboardBudget() {
           {/* 2. Add New Expense Form (Full Width) */}
           <div className="space-y-6">
             <h3 className="text-2xl font-bold text-[#1F1F1F]">Add New Expense</h3>
-            <div className="dash-card p-10 bg-white border-[#E8D5C8]/50 shadow-xl shadow-[#AF944F]/5">
+            <div className="dash-card p-10 bg-white border-[#E8D5C8]/50 shadow-xl shadow-[#006884]/5">
               <form onSubmit={handleAddExpense} className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <div className="space-y-6">
                   <div>
@@ -319,7 +319,7 @@ export default function DashboardBudget() {
                       placeholder="e.g., Wedding Cake"
                       value={expenseForm.name}
                       onChange={(e) => setExpenseForm({ ...expenseForm, name: e.target.value })}
-                      className="w-full bg-white border border-[#E8D5C8] rounded-2xl h-16 px-6 text-[#1F1F1F] font-bold outline-none focus:ring-2 focus:ring-[#AF944F]/20 transition-all shadow-inner"
+                      className="w-full bg-white border border-[#E8D5C8] rounded-2xl h-16 px-6 text-[#1F1F1F] font-bold outline-none focus:ring-2 focus:ring-[#006884]/20 transition-all shadow-inner"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -328,7 +328,7 @@ export default function DashboardBudget() {
                       <select
                         value={expenseForm.category}
                         onChange={(e) => setExpenseForm({ ...expenseForm, category: e.target.value })}
-                        className="w-full bg-[#F7F3EF] border-none rounded-2xl h-16 px-6 text-[#1F1F1F] font-bold outline-none focus:ring-2 focus:ring-[#AF944F]/20 transition-all appearance-none"
+                        className="w-full bg-[#F7F3EF] border-none rounded-2xl h-16 px-6 text-[#1F1F1F] font-bold outline-none focus:ring-2 focus:ring-[#006884]/20 transition-all appearance-none"
                       >
                         {['Venue', 'Catering', 'Attire', 'Music', 'Flowers', 'Photo', 'Other'].map(c => (
                           <option key={c} value={c}>{c}</option>
@@ -342,7 +342,7 @@ export default function DashboardBudget() {
                         placeholder="0.00"
                         value={expenseForm.amount}
                         onChange={(e) => setExpenseForm({ ...expenseForm, amount: e.target.value })}
-                        className="w-full bg-white border border-[#E8D5C8] rounded-2xl h-16 px-6 text-[#1F1F1F] font-bold outline-none focus:ring-2 focus:ring-[#AF944F]/20 transition-all shadow-inner"
+                        className="w-full bg-white border border-[#E8D5C8] rounded-2xl h-16 px-6 text-[#1F1F1F] font-bold outline-none focus:ring-2 focus:ring-[#006884]/20 transition-all shadow-inner"
                       />
                     </div>
                   </div>
@@ -360,8 +360,8 @@ export default function DashboardBudget() {
                           className={cn(
                             "flex-1 h-16 rounded-2xl font-bold transition-all border-2",
                             expenseForm.status === s
-                              ? "bg-[#AF944F] border-[#AF944F] text-white shadow-lg shadow-[#AF944F]/20"
-                              : "bg-white border-[#E8D5C8]/50 text-neutral-400 hover:border-[#AF944F]/20"
+                              ? "bg-[#006884] border-[#006884] text-white shadow-lg shadow-[#006884]/20"
+                              : "bg-white border-[#E8D5C8]/50 text-neutral-400 hover:border-[#006884]/20"
                           )}
                         >
                           {s}
@@ -371,7 +371,7 @@ export default function DashboardBudget() {
                   </div>
                   <button
                     type="submit"
-                    className="w-full bg-[#AF944F] text-white rounded-2xl h-18 font-bold flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-[#AF944F]/30"
+                    className="w-full bg-[#006884] text-white rounded-2xl h-18 font-bold flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-[#006884]/30"
                   >
                     <Plus className="h-6 w-6" />
                     <span className="text-lg">Record Expense</span>
@@ -383,9 +383,9 @@ export default function DashboardBudget() {
 
           {/* 3. Footer Insights (Moved Down & Side-by-Side) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-[#E8D5C8]/30">
-            <div className="dash-card p-8 !bg-[#FDFBF7] border-2 border-[#AF944F]/30 shadow-xl shadow-[#AF944F]/5 relative overflow-hidden group">
-              <TrendingDown className="absolute -right-4 -bottom-4 h-24 w-24 text-[#AF944F]/10 rotate-12 transition-transform group-hover:scale-110" />
-              <h4 className="font-bold text-[#AF944F] mb-4 flex items-center gap-2 relative z-10">
+            <div className="dash-card p-8 !bg-[#FDFBF7] border-2 border-[#006884]/30 shadow-xl shadow-[#006884]/5 relative overflow-hidden group">
+              <TrendingDown className="absolute -right-4 -bottom-4 h-24 w-24 text-[#006884]/10 rotate-12 transition-transform group-hover:scale-110" />
+              <h4 className="font-bold text-[#006884] mb-4 flex items-center gap-2 relative z-10">
                 <TrendingDown className="h-5 w-5" />
                 Budget Insight
               </h4>

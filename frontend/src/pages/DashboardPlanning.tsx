@@ -115,10 +115,10 @@ export default function DashboardPlanning() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-[#AF944F]/10 rounded-lg text-[#AF944F]">
+              <div className="p-2 bg-[#006884]/10 rounded-lg text-[#006884]">
                 <ClipboardList className="h-5 w-5" />
               </div>
-              <span className="text-xs font-bold uppercase tracking-[2px] text-[#AF944F]">Planning Center</span>
+              <span className="text-xs font-bold uppercase tracking-[2px] text-[#006884]">Planning Center</span>
             </div>
             <div className="flex flex-col xl:flex-row xl:items-center gap-8">
               <div>
@@ -133,11 +133,11 @@ export default function DashboardPlanning() {
                   placeholder="What needs to be done? Add or search tasks..."
                   value={newTask}
                   onChange={(e) => setNewTask(e.target.value)}
-                  className="w-full bg-white border border-[#E8D5C8]/50 rounded-[2rem] h-16 pl-8 pr-32 text-lg shadow-sm focus:ring-4 focus:ring-[#AF944F]/5 outline-none transition-all"
+                  className="w-full bg-white border border-[#E8D5C8]/50 rounded-[2rem] h-16 pl-8 pr-32 text-lg shadow-sm focus:ring-4 focus:ring-[#006884]/5 outline-none transition-all"
                 />
                 <button 
                   type="submit"
-                  className="absolute right-2 top-2 bottom-2 px-6 bg-[#AF944F] text-white rounded-2xl font-bold flex items-center gap-2 hover:bg-[#967d3f] transition-all shadow-lg shadow-[#AF944F]/10"
+                  className="absolute right-2 top-2 bottom-2 px-6 bg-[#006884] text-white rounded-2xl font-bold flex items-center gap-2 hover:bg-[#967d3f] transition-all shadow-lg shadow-[#006884]/10"
                 >
                   <Plus className="h-5 w-5" />
                   Add
@@ -159,7 +159,7 @@ export default function DashboardPlanning() {
                     cy="40"
                     r="36"
                     fill="none"
-                    stroke="#AF944F"
+                    stroke="#006884"
                     strokeWidth="5"
                     strokeDasharray={226.2}
                     strokeDashoffset={226.2 - (226.2 * completionRate) / 100}
@@ -167,7 +167,7 @@ export default function DashboardPlanning() {
                     className="transition-all duration-1000 ease-out"
                   />
                 </svg>
-                <span className="text-xl font-black text-[#AF944F] relative z-10">{completionRate}%</span>
+                <span className="text-xl font-black text-[#006884] relative z-10">{completionRate}%</span>
               </div>
               <div>
                 <p className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-1">Overall Progress</p>
@@ -181,7 +181,7 @@ export default function DashboardPlanning() {
             <div className="dash-card p-0 overflow-hidden flex flex-col h-full min-h-[180px]">
               <div className="p-6 border-b border-[#E8D5C8]/30 flex items-center justify-between bg-[#FDFBF7]">
                 <h3 className="font-bold text-[#1F1F1F] flex items-center gap-2">
-                  <StickyNote className="h-5 w-5 text-[#AF944F]" />
+                  <StickyNote className="h-5 w-5 text-[#006884]" />
                   Wedding Notes
                 </h3>
               </div>
@@ -192,7 +192,7 @@ export default function DashboardPlanning() {
             </div>
 
             {/* Planning Tip */}
-            <div className="dash-card p-8 bg-[#AF944F] text-black border-none shadow-xl shadow-[#AF944F]/20 overflow-hidden relative h-full min-h-[180px] flex flex-col justify-center">
+            <div className="dash-card p-8 bg-[#006884] text-black border-none shadow-xl shadow-[#006884]/20 overflow-hidden relative h-full min-h-[180px] flex flex-col justify-center">
               <Sparkles className="absolute -right-4 -top-4 h-24 w-24 opacity-10 rotate-12" />
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <AlertCircle className="h-5 w-5" />
@@ -215,7 +215,7 @@ export default function DashboardPlanning() {
                     className={cn(
                       "px-6 py-2 rounded-xl text-sm font-bold capitalize transition-all",
                       activeTab === tab 
-                        ? "bg-white text-[#AF944F] shadow-sm" 
+                        ? "bg-white text-[#006884] shadow-sm" 
                         : "text-neutral-500 hover:text-[#1F1F1F]"
                     )}
                   >
@@ -224,7 +224,7 @@ export default function DashboardPlanning() {
                 ))}
               </div>
               <div className="text-sm font-bold text-neutral-400 uppercase tracking-widest">
-                Showing <span className="text-[#AF944F]">{filteredTasks.length}</span> Tasks
+                Showing <span className="text-[#006884]">{filteredTasks.length}</span> Tasks
               </div>
             </div>
 
@@ -239,7 +239,7 @@ export default function DashboardPlanning() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     className={cn(
-                      "dash-card p-6 flex items-center gap-4 group hover:border-[#AF944F]/20 transition-all",
+                      "dash-card p-6 flex items-center gap-4 group hover:border-[#006884]/20 transition-all",
                       task.completed && "bg-[#FDFBF7]/50"
                     )}
                   >
@@ -247,7 +247,7 @@ export default function DashboardPlanning() {
                       onClick={() => toggleTask(task._id, task.completed)}
                       className={cn(
                         "transition-all transform active:scale-90",
-                        task.completed ? "text-[#10B981]" : "text-neutral-300 hover:text-[#AF944F]"
+                        task.completed ? "text-[#10B981]" : "text-neutral-300 hover:text-[#006884]"
                       )}
                     >
                       {task.completed ? <CheckCircle2 className="h-8 w-8" /> : <Circle className="h-8 w-8" />}
@@ -261,7 +261,7 @@ export default function DashboardPlanning() {
                         {task.title}
                       </h3>
                       <div className="flex items-center gap-4 mt-1">
-                        <span className="flex items-center gap-1.5 text-xs font-bold text-[#AF944F] uppercase tracking-widest">
+                        <span className="flex items-center gap-1.5 text-xs font-bold text-[#006884] uppercase tracking-widest">
                           <Tag className="h-3 w-3" />
                           {task.category}
                         </span>

@@ -9,7 +9,7 @@
   --font-sans: "Inter", sans-serif;
   --font-serif: "Playfair Display", serif;
   --color-cream: #FDFBF7;
-  --color-gold: #AF944F;
+  --color-gold: #006884;
   --color-rose: #D9BDB5;
   --color-ink: #1F1F1F;
   --color-glass: rgba(255, 255, 255, 0.6);
@@ -70,15 +70,15 @@
   --secondary-foreground: #1F1F1F;
   --muted: rgba(0, 0, 0, 0.05);
   --muted-foreground: rgba(31, 31, 31, 0.6);
-  --accent: #AF944F;
+  --accent: #006884;
   --accent-foreground: #FFFFFF;
   --destructive: #ef4444;
   --border: rgba(255, 255, 255, 0.4);
   --input: rgba(255, 255, 255, 0.4);
-  --ring: #AF944F;
+  --ring: #006884;
   --radius: 2rem;
 
-  --chart-1: #AF944F;
+  --chart-1: #006884;
   --chart-2: #D9BDB5;
   --chart-3: #1F1F1F;
   --chart-4: #E8D5C8;
@@ -91,12 +91,12 @@
   --sidebar-accent: rgba(0, 0, 0, 0.05);
   --sidebar-accent-foreground: #1F1F1F;
   --sidebar-border: rgba(0, 0, 0, 0.1);
-  --sidebar-ring: #AF944F;
+  --sidebar-ring: #006884;
 
   /* Dashboard V2 Theme (Site Colors) */
   --dash-bg: #F7F3EF;
   --dash-sidebar: #FDFBF7;
-  --dash-primary: #AF944F;
+  --dash-primary: #006884;
   --dash-primary-fade: rgba(175, 148, 79, 0.1);
   --dash-success: #10B981;
   --dash-pending: #F59E0B;
@@ -112,11 +112,12 @@
     @apply border-border outline-ring/50;
   }
 
+  html, body {
+    overflow-x: hidden;
+  }
+
   body {
     @apply bg-background text-foreground font-sans;
-    background-image:
-      radial-gradient(circle at top right, #E8D5C8 0%, transparent 40%),
-      radial-gradient(circle at bottom left, #FDFBF7 0%, transparent 50%);
     background-attachment: fixed;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
@@ -175,7 +176,7 @@
 
 /* Dashboard Specific Utilities */
 .dash-card {
-  @apply bg-white rounded-[2rem] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)];
+  @apply bg-white rounded-[1.5rem] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)];
 }
 
 .dash-badge {
@@ -187,7 +188,7 @@
 }
 
 .dash-btn-primary {
-  @apply bg-[#AF944F] text-white rounded-xl px-6 py-3 font-semibold shadow-lg shadow-[#AF944F]/20 hover:bg-[#967E42] transition-all;
+  @apply bg-[#006884] text-white rounded-xl px-6 py-3 font-semibold shadow-lg shadow-[#006884]/20 hover:bg-[#967E42] transition-all;
 }
 
 .no-scrollbar::-webkit-scrollbar {

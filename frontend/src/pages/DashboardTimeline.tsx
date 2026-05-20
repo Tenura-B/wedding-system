@@ -52,20 +52,20 @@ export default function DashboardTimeline() {
               <div key={i} className="relative flex flex-col md:flex-row items-start gap-8 group">
                 {/* Time Column */}
                 <div className="md:w-20 pt-2 flex-shrink-0 text-right hidden md:block">
-                  <span className="text-xl font-bold text-[#AF944F] font-mono tracking-tighter">
+                  <span className="text-xl font-bold text-[#006884] font-mono tracking-tighter">
                     {event.time}
                   </span>
                 </div>
 
                 {/* Icon Circle */}
-                <div className="w-16 h-16 rounded-full bg-white border-4 border-[#F7F3EF] shadow-lg flex items-center justify-center text-[#AF944F] z-10 transition-transform group-hover:scale-110">
+                <div className="w-16 h-16 rounded-full bg-white border-4 border-[#F7F3EF] shadow-lg flex items-center justify-center text-[#006884] z-10 transition-transform group-hover:scale-110">
                   <event.icon className="h-6 w-6" />
                 </div>
 
                 {/* Content Card */}
-                <div className="flex-1 dash-card p-8 border-2 border-transparent hover:border-[#AF944F]/20 transition-all relative group/card">
+                <div className="flex-1 dash-card p-8 border-2 border-transparent hover:border-[#006884]/20 transition-all relative group/card">
                   <div className="md:hidden mb-4">
-                    <span className="px-3 py-1 bg-[#AF944F]/10 text-[#AF944F] text-xs font-bold rounded-lg font-mono">
+                    <span className="px-3 py-1 bg-[#006884]/10 text-[#006884] text-xs font-bold rounded-lg font-mono">
                       {event.time}
                     </span>
                   </div>
@@ -73,7 +73,7 @@ export default function DashboardTimeline() {
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <h3 className="text-xl font-bold text-[#1F1F1F] mb-1">{event.label}</h3>
-                      <span className="text-xs font-bold uppercase tracking-[2px] text-[#AF944F] py-1 px-2 bg-[#AF944F]/5 rounded leading-none">
+                      <span className="text-xs font-bold uppercase tracking-[2px] text-[#006884] py-1 px-2 bg-[#006884]/5 rounded leading-none">
                         {event.category}
                       </span>
                     </div>
@@ -100,7 +100,7 @@ export default function DashboardTimeline() {
 
         {/* Footer Action */}
         <div className="flex justify-center pt-8">
-          <button className="flex items-center gap-2 px-10 py-5 bg-[#FDFBF7] border border-dashed border-[#E8D5C8] rounded-3xl text-neutral-400 hover:text-[#AF944F] hover:border-[#AF944F] transition-all group">
+          <button className="flex items-center gap-2 px-10 py-5 bg-[#FDFBF7] border border-dashed border-[#E8D5C8] rounded-3xl text-neutral-400 hover:text-[#006884] hover:border-[#006884] transition-all group">
             <Plus className="h-5 w-5 group-hover:rotate-90 transition-transform duration-300" />
             <span className="font-bold uppercase tracking-[2px] text-sm">Insert Between Events</span>
           </button>
