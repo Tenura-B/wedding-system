@@ -113,7 +113,7 @@ export default function AIAssistant({ invitationId }: AIAssistantProps) {
             className="w-[90vw] md:w-[400px] h-[600px] max-h-[80vh] bg-white rounded-[2.5rem] shadow-2xl border border-[#E8D5C8]/50 flex flex-col overflow-hidden mb-4"
           >
             {/* Header */}
-            <div className="p-6 bg-gradient-to-r from-[#AF944F] to-[#D9BDB5] text-white flex items-center justify-between">
+            <div className="p-6 bg-gradient-to-r from-[#006884] to-[#D9BDB5] text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
                   <Sparkles className="h-5 w-5" />
@@ -153,7 +153,7 @@ export default function AIAssistant({ invitationId }: AIAssistantProps) {
                 >
                   <div className={cn(
                     "w-8 h-8 rounded-full flex items-center justify-center shrink-0 border",
-                    msg.role === "user" ? "bg-white border-[#E8D5C8]" : "bg-[#AF944F] text-white border-[#AF944F]"
+                    msg.role === "user" ? "bg-white border-[#E8D5C8]" : "bg-[#006884] text-white border-[#006884]"
                   )}>
                     {msg.role === "user" ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
                   </div>
@@ -161,7 +161,7 @@ export default function AIAssistant({ invitationId }: AIAssistantProps) {
                     "max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed shadow-sm",
                     msg.role === "user"
                       ? "bg-white text-neutral-800 border border-[#E8D5C8]/30 rounded-tr-none"
-                      : "bg-[#AF944F]/5 text-neutral-900 border border-[#AF944F]/10 rounded-tl-none font-['Cormorant_Garamond'] italic font-medium"
+                      : "bg-[#006884]/5 text-neutral-900 border border-[#006884]/10 rounded-tl-none font-['Cormorant_Garamond'] italic font-medium"
                   )}>
                     {msg.content}
                   </div>
@@ -169,14 +169,14 @@ export default function AIAssistant({ invitationId }: AIAssistantProps) {
               ))}
               {isLoading && (
                 <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#AF944F] text-white flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-[#006884] text-white flex items-center justify-center shrink-0">
                     <Loader2 className="h-4 w-4 animate-spin" />
                   </div>
-                  <div className="bg-[#AF944F]/5 p-4 rounded-2xl rounded-tl-none border border-[#AF944F]/10">
+                  <div className="bg-[#006884]/5 p-4 rounded-2xl rounded-tl-none border border-[#006884]/10">
                     <div className="flex gap-1">
-                      <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-[#AF944F] rounded-full" />
-                      <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-[#AF944F] rounded-full" />
-                      <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-[#AF944F] rounded-full" />
+                      <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-[#006884] rounded-full" />
+                      <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-[#006884] rounded-full" />
+                      <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-[#006884] rounded-full" />
                     </div>
                   </div>
                 </div>
@@ -191,12 +191,12 @@ export default function AIAssistant({ invitationId }: AIAssistantProps) {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask Aura anything..."
-                  className="w-full h-14 bg-neutral-50 border border-[#E8D5C8]/50 rounded-2xl pl-6 pr-14 text-sm focus:outline-none focus:border-[#AF944F] transition-all"
+                  className="w-full h-14 bg-neutral-50 border border-[#E8D5C8]/50 rounded-2xl pl-6 pr-14 text-sm focus:outline-none focus:border-[#006884] transition-all"
                 />
                 <button
                   type="submit"
                   disabled={!input.trim() || isLoading}
-                  className="absolute right-2 top-2 w-10 h-10 bg-[#AF944F] text-white rounded-xl flex items-center justify-center hover:bg-[#967E42] disabled:opacity-50 disabled:hover:bg-[#AF944F] transition-all"
+                  className="absolute right-2 top-2 w-10 h-10 bg-[#006884] text-white rounded-xl flex items-center justify-center hover:bg-[#967E42] disabled:opacity-50 disabled:hover:bg-[#006884] transition-all"
                 >
                   <Send className="h-4 w-4" />
                 </button>
@@ -209,7 +209,7 @@ export default function AIAssistant({ invitationId }: AIAssistantProps) {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-4 bg-[#AF944F] text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-3 cursor-pointer hover:bg-[#967E42] transition-all"
+            className="mb-4 bg-[#006884] text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-3 cursor-pointer hover:bg-[#967E42] transition-all"
             onClick={() => setIsMinimized(false)}
           >
             <Sparkles className="h-4 w-4 animate-pulse" />
@@ -228,7 +228,7 @@ export default function AIAssistant({ invitationId }: AIAssistantProps) {
         }}
         className={cn(
           "w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all border-4 border-white",
-          isOpen ? "bg-black text-white" : "bg-gradient-to-tr from-[#AF944F] to-[#D9BDB5] text-white"
+          isOpen ? "bg-black text-white" : "bg-gradient-to-tr from-[#006884] to-[#D9BDB5] text-white"
         )}
       >
         {isOpen ? <X className="h-6 w-6" /> : <BrainCircuit className="h-7 w-7" />}

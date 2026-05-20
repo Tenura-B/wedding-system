@@ -63,7 +63,7 @@ export default function DashboardVendors() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             { label: "Providers Booked", value: vendors.filter((v: any) => v.status === 'Booked').length, icon: CheckCircle2, color: "#10B981" },
-            { label: "Active Quotes", value: vendors.filter((v: any) => v.status === 'Quote Sent').length, icon: FileText, color: "#AF944F" },
+            { label: "Active Quotes", value: vendors.filter((v: any) => v.status === 'Quote Sent').length, icon: FileText, color: "#006884" },
             { label: "Est. Budget Spent", value: "$12,400", icon: DollarSign, color: "#D9BDB5" },
           ].map((stat, i) => (
             <div key={i} className="dash-card p-8 border-2" style={{ borderColor: stat.color }}>
@@ -89,12 +89,12 @@ export default function DashboardVendors() {
             <div key={i} className="dash-card p-6 border-2 hover:shadow-xl transition-all group" style={{ borderColor: '#E8D5C8' }}>
               <div className="flex items-start justify-between mb-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-[#FDFBF7] rounded-2xl border border-[#E8D5C8]/30 flex items-center justify-center text-[#AF944F]">
+                  <div className="w-14 h-14 bg-[#FDFBF7] rounded-2xl border border-[#E8D5C8]/30 flex items-center justify-center text-[#006884]">
                     <Store className="h-7 w-7" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#1F1F1F] text-lg group-hover:text-[#AF944F] transition-colors">{vendor.name}</h3>
-                    <p className="text-sm font-bold text-[#AF944F] flex items-center gap-1">
+                    <h3 className="font-bold text-[#1F1F1F] text-lg group-hover:text-[#006884] transition-colors">{vendor.name}</h3>
+                    <p className="text-sm font-bold text-[#006884] flex items-center gap-1">
                       <Tag className="h-3 w-3" />
                       {vendor.category}
                     </p>
@@ -125,7 +125,7 @@ export default function DashboardVendors() {
                   {vendor.status === 'Booked' ? <CheckCircle2 className="h-4 w-4" /> : (vendor.status === 'Quote Sent' ? <FileText className="h-4 w-4" /> : <Clock className="h-4 w-4" />)}
                   {vendor.status}
                 </div>
-                <button className="text-xs font-bold text-[#1F1F1F] hover:text-[#AF944F] flex items-center gap-1 uppercase tracking-widest transition-colors">
+                <button className="text-xs font-bold text-[#1F1F1F] hover:text-[#006884] flex items-center gap-1 uppercase tracking-widest transition-colors">
                   Details <ExternalLink className="h-3 w-3" />
                 </button>
               </div>
@@ -133,11 +133,11 @@ export default function DashboardVendors() {
           ))}
 
           {/* Add Vendor Card */}
-          <button className="dash-card p-6 border-2 border-dashed border-[#E8D5C8] flex flex-col items-center justify-center gap-4 hover:bg-[#FDFBF7] hover:border-[#AF944F] transition-all min-h-[300px] group">
-            <div className="w-16 h-16 rounded-full bg-[#F7F3EF] flex items-center justify-center text-neutral-300 group-hover:bg-[#AF944F] group-hover:text-white transition-all">
+          <button className="dash-card p-6 border-2 border-dashed border-[#E8D5C8] flex flex-col items-center justify-center gap-4 hover:bg-[#FDFBF7] hover:border-[#006884] transition-all min-h-[300px] group">
+            <div className="w-16 h-16 rounded-full bg-[#F7F3EF] flex items-center justify-center text-neutral-300 group-hover:bg-[#006884] group-hover:text-white transition-all">
               <Plus className="h-8 w-8" />
             </div>
-            <p className="font-bold text-neutral-400 group-hover:text-[#AF944F] transition-colors uppercase tracking-[2px] text-xs">Add New Partner</p>
+            <p className="font-bold text-neutral-400 group-hover:text-[#006884] transition-colors uppercase tracking-[2px] text-xs">Add New Partner</p>
           </button>
         </div>
       </div>

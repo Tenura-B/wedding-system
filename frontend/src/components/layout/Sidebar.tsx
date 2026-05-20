@@ -38,34 +38,36 @@ interface SidebarProps {
   isCollapsed: boolean;
   onToggleCollapse: () => void;
   invitationSlug?: string;
+  isDesktop?: boolean;
 }
 
-export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse, invitationSlug }: SidebarProps) {
+export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse, invitationSlug, isDesktop = false }: SidebarProps) {
   const location = useLocation();
 
   return (
     <>
       {/* Mobile & Desktop Sidebar */}
       <aside className={cn(
-        "fixed left-0 top-0 h-screen bg-[#FDFBF7] border-r border-[#E8D5C8] flex flex-col z-50 transition-all duration-300 shadow-xl lg:shadow-none",
+        "fixed left-0 top-0 h-screen bg-[#FDFBF7] border-r border-[#E8D5C8] flex flex-col z-50 transition-all duration-300 shadow-xl",
         isCollapsed ? "w-20" : "w-72",
-        // Mobile visibility
-        isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        isDesktop ? "translate-x-0 shadow-none" : (isOpen ? "translate-x-0" : "-translate-x-full")
       )}>
         {/* Close Button (Mobile Only) */}
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 p-2 text-[#1F1F1F] lg:hidden"
-        >
-          <X className="h-6 w-6" />
-        </button>
+        {!isDesktop && (
+          <button
+            onClick={onClose}
+            className="absolute right-4 top-4 p-2 text-[#1F1F1F]"
+          >
+            <X className="h-6 w-6" />
+          </button>
+        )}
 
         {/* Sidebar Header */}
         <div className={cn("p-8 pb-4 transition-all duration-300", isCollapsed && "px-4")}>
           <div className={cn("flex items-center gap-3 mb-10 overflow-hidden", isCollapsed && "justify-center")}>
             <button
               onClick={onToggleCollapse}
-              className="w-10 h-10 bg-[#AF944F] rounded-xl flex-shrink-0 flex items-center justify-center text-white shadow-lg shadow-[#AF944F]/20 hover:scale-105 active:scale-95 transition-all outline-none"
+              className="w-10 h-10 bg-[#006884] rounded-xl flex-shrink-0 flex items-center justify-center text-white shadow-lg shadow-[#006884]/20 hover:scale-105 active:scale-95 transition-all outline-none"
             >
               <Menu className="h-5 w-5" />
             </button>
@@ -76,7 +78,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
                 className="whitespace-nowrap"
               >
                 <h1 className="font-bold text-[20px] text-[#1F1F1F] leading-tight">Grand Ballroom</h1>
-                <p className="text-xs uppercase tracking-widest text-[#AF944F]">Oct 2024 • Wedding</p>
+                <p className="text-xs uppercase tracking-widest text-[#006884]">Oct 2024 • Wedding</p>
               </motion.div>
             )}
           </div>
@@ -90,7 +92,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
                 <>
                   <item.icon className={cn(
                     "h-5 w-5 transition-colors flex-shrink-0",
-                    isActive ? "text-[#AF944F]" : "text-neutral-400 group-hover:text-neutral-600"
+                    isActive ? "text-[#006884]" : "text-neutral-400 group-hover:text-neutral-600"
                   )} />
                   {!isCollapsed && (
                     <motion.span
@@ -120,7 +122,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
                   rel="noopener noreferrer"
                   className={cn(
                     "flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative",
-                    "text-neutral-500 hover:text-[#AF944F] hover:bg-[#AF944F]/5",
+                    "text-neutral-500 hover:text-[#006884] hover:bg-[#006884]/5",
                     isCollapsed && "justify-center px-0"
                   )}
                 >
@@ -130,11 +132,11 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
                 <Link
                   key={item.path}
                   to={item.path}
-                  onClick={() => window.innerWidth < 1024 && onClose()}
+                  onClick={() => !isDesktop && onClose()}
                   className={cn(
                     "flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative",
                     isActive
-                      ? "text-[#AF944F] bg-[#AF944F]/5 shadow-sm"
+                      ? "text-[#006884] bg-[#006884]/5 shadow-sm"
                       : "text-neutral-500 hover:text-[#1F1F1F] hover:bg-neutral-100/50",
                     isCollapsed && "justify-center px-0"
                   )}

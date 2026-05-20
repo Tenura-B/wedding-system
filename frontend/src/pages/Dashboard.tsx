@@ -22,6 +22,7 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import api from "@/lib/api";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import useIsDesktop from "@/hooks/useIsDesktop";
 
 export default function Dashboard() {
   const [invitations, setInvitations] = useState<any[]>([]);
@@ -34,6 +35,7 @@ export default function Dashboard() {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   const selectedInvitation = invitations.find(inv => inv.slug === selectedSlug);
+  const isDesktop = useIsDesktop();
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -108,7 +110,7 @@ export default function Dashboard() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#F7F3EF] flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-[#AF944F]/20 border-t-[#AF944F] rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-[#006884]/20 border-t-[#006884] rounded-full animate-spin" />
       </div>
     );
   }
@@ -120,7 +122,7 @@ export default function Dashboard() {
     >
       <div className="space-y-6 md:space-y-10 max-w-[1440px] mx-auto overflow-hidden">
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-[#1F1F1F] mb-1">
               {selectedInvitation ? `${selectedInvitation.brideName} & ${selectedInvitation.groomName}` : 'Dashboard Overview'}
@@ -129,7 +131,7 @@ export default function Dashboard() {
               Welcome back, {user.name?.split(' ')[0]}. {selectedInvitation ? `Your wedding planning is ${completion}% complete.` : 'No upcoming weddings found.'}
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             <button 
               onClick={() => {
                 if (selectedInvitation) {
@@ -138,7 +140,7 @@ export default function Dashboard() {
                   toast.success("Link copied to clipboard!");
                 }
               }}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-white border border-[#AF944F] rounded-xl font-bold text-xs md:text-sm text-[#AF944F] shadow-sm hover:bg-[#AF944F]/5 transition-all"
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-white border border-[#006884] rounded-xl font-bold text-xs md:text-sm text-[#006884] shadow-sm hover:bg-[#006884]/5 transition-all"
             >
               <LinkIcon className="h-4 w-4" />
               Copy Site Link
@@ -151,10 +153,13 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className={cn(
+          "grid gap-4 md:gap-6",
+          isDesktop ? "grid-cols-4" : "grid-cols-1 sm:grid-cols-2"
+        )}>
           {[
             { label: "Confirmed Guests", value: stats.total, icon: CheckCircle2, color: "#10B981", trend: "+12%", up: true },
-            { label: "Total Responses", value: stats.responses, icon: User, color: "#AF944F" },
+            { label: "Total Responses", value: stats.responses, icon: User, color: "#006884" },
             { label: "Attending", value: stats.attending, icon: Check, color: "#10B981" },
             { label: "Vendors Booked", value: stats.vendorsBooked, icon: Store, color: "#D9BDB5", progress: Math.round((stats.vendorsBooked / (stats.totalVendors || 1)) * 100) },
           ].map((stat, i) => (
@@ -212,26 +217,26 @@ export default function Dashboard() {
         </div>
 
         {/* Tables Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 overflow-hidden">
+        <div className="grid gap-6 md:gap-8 overflow-hidden grid-cols-1 md:grid-cols-2">
           {/* Recent RSVPs */}
-          <div className="lg:col-span-2 dash-card flex flex-col">
+          <div className="dash-card flex flex-col col-span-1">
             <div className="p-6 md:p-8 flex items-center justify-between border-b border-[#E8D5C8]/30">
               <h3 className="text-lg md:text-xl font-bold text-[#1F1F1F]">Recent RSVPs</h3>
-              <button className="text-xs md:text-sm font-bold text-[#AF944F] hover:underline uppercase tracking-widest">View All</button>
+              <button className="text-xs md:text-sm font-bold text-[#006884] hover:underline uppercase tracking-widest">View All</button>
             </div>
             
             <div className="p-4 flex-1">
               <div className="space-y-1">
                 {isRsvpLoading ? (
                    <div className="py-20 flex flex-col items-center gap-3">
-                      <div className="w-8 h-8 border-2 border-[#AF944F]/20 border-t-[#AF944F] rounded-full animate-spin" />
+                      <div className="w-8 h-8 border-2 border-[#006884]/20 border-t-[#006884] rounded-full animate-spin" />
                       <p className="text-xs text-neutral-400">Loading guests...</p>
                    </div>
                 ) : rsvps.slice(0, 5).map((rsvp, idx) => (
                   <div key={idx} className="flex flex-wrap items-center justify-between p-4 hover:bg-[#FDFBF7] rounded-2xl transition-all group gap-4">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#E8D5C8]/20 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm transition-transform group-hover:scale-110">
-                        <User className="h-5 w-5 text-[#AF944F]/60" />
+                        <User className="h-5 w-5 text-[#006884]/60" />
                       </div>
                       <div>
                         <h4 className="font-bold text-[#1F1F1F] text-base">{rsvp.name}</h4>
@@ -270,7 +275,7 @@ export default function Dashboard() {
               </div>
               <div className="h-2 w-full bg-[#E8D5C8]/20 rounded-full overflow-hidden">
                 <motion.div 
-                  className="h-full bg-[#AF944F] rounded-full shadow-[0_0_10px_rgba(175,148,79,0.3)]"
+                  className="h-full bg-[#006884] rounded-full shadow-[0_0_10px_rgba(175,148,79,0.3)]"
                   initial={{ width: 0 }}
                   animate={{ width: `${completion}%` }}
                   transition={{ duration: 1.5, ease: "easeOut" }}
@@ -282,7 +287,7 @@ export default function Dashboard() {
           {/* New Summary Grid for Planning & Budget */}
           <div className="space-y-6 md:space-y-8">
             {/* Planning Widget */}
-            <div className="dash-card p-6 md:p-8 !bg-[#AF944F] text-white border-none shadow-xl shadow-[#AF944F]/20 relative overflow-hidden group">
+            <div className="dash-card p-6 md:p-8 !bg-[#006884] text-white border-none shadow-xl shadow-[#006884]/20 relative overflow-hidden group">
                <ClipboardList className="absolute -right-4 -bottom-4 h-24 w-24 opacity-10 rotate-12 transition-transform group-hover:scale-110" />
                <h3 className="text-xl font-bold mb-6">Planning Progress</h3>
                <div className="flex items-end justify-between mb-4">
@@ -307,16 +312,24 @@ export default function Dashboard() {
 
             {/* Budget Widget */}
             <div className="dash-card p-6 md:p-8 bg-white border-[#E8D5C8]/50 shadow-sm relative overflow-hidden group">
-               <Wallet className="absolute -right-4 -bottom-4 h-24 w-24 text-[#AF944F]/5 rotate-12 transition-transform group-hover:scale-110" />
+               <Wallet className="absolute -right-4 -bottom-4 h-24 w-24 text-[#006884]/5 rotate-12 transition-transform group-hover:scale-110" />
                <h3 className="text-xl font-bold text-[#1F1F1F] mb-6">Budget Status</h3>
                <div className="space-y-4">
                   <div className="flex justify-between items-center p-4 !bg-[#FDFBF7] rounded-2xl border border-[#E8D5C8]/30">
                     <span className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Remaining</span>
-                    <span className="text-xl font-black text-[#AF944F]">
+                    <span className="text-xl font-black text-[#006884]">
                       ${budget ? (budget.totalBudget - budget.expenses.reduce((acc:any, c:any)=>acc+c.amount, 0)).toLocaleString() : '0'}
                     </span>
                   </div>
-                  <Link to="/budget" className="w-full flex items-center justify-center gap-2 py-4 !bg-[#AF944F] text-white rounded-2xl font-bold text-sm hover:scale-[1.02] transition-all">
+                  <Link 
+                    to="/budget" 
+                    className={cn(
+                      "flex items-center justify-center gap-2 !bg-[#006884] text-white transition-all",
+                      isDesktop 
+                        ? "w-44 py-2.5 mx-auto rounded-xl font-bold text-xs hover:scale-[1.02]" 
+                        : "w-1/2 md:w-1/3 mx-auto py-3.5 rounded-2xl font-bold text-sm hover:scale-[1.02]"
+                    )}
+                  >
                     Manage Finances
                   </Link>
                </div>
@@ -327,18 +340,18 @@ export default function Dashboard() {
           <div className="dash-card flex flex-col">
             <div className="p-6 md:p-8 flex items-center justify-between border-b border-[#E8D5C8]/30">
               <h3 className="text-lg md:text-xl font-bold text-[#1F1F1F]">Vendor Status</h3>
-              <button className="text-xs md:text-sm font-bold text-[#AF944F] hover:underline uppercase tracking-widest">Edit</button>
+              <button className="text-xs md:text-sm font-bold text-[#006884] hover:underline uppercase tracking-widest">Edit</button>
             </div>
             
             <div className="p-6 space-y-6 flex-1">
               {(selectedInvitation?.vendors || []).slice(0, 5).map((vendor, i) => (
                 <div key={i} className="flex items-center justify-between group cursor-pointer">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-[#FDFBF7] flex items-center justify-center transition-all group-hover:bg-white group-hover:shadow-md border border-[#E8D5C8]/20 group-hover:border-[#AF944F]/20">
+                    <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-[#FDFBF7] flex items-center justify-center transition-all group-hover:bg-white group-hover:shadow-md border border-[#E8D5C8]/20 group-hover:border-[#006884]/20">
                       <Store className="h-5 w-5 text-[#E8D5C8]" />
                     </div>
                     <div>
-                      <h4 className="text-base font-bold text-[#1F1F1F] leading-none mb-1 group-hover:text-[#AF944F] transition-colors">{vendor.name}</h4>
+                      <h4 className="text-base font-bold text-[#1F1F1F] leading-none mb-1 group-hover:text-[#006884] transition-colors">{vendor.name}</h4>
                       <p className="text-sm text-neutral-400 font-medium">{vendor.category}</p>
                     </div>
                   </div>
@@ -346,13 +359,13 @@ export default function Dashboard() {
                   <div className={cn(
                     "flex items-center gap-2 text-sm font-bold whitespace-nowrap px-2 py-1 rounded-lg md:bg-transparent md:p-0",
                     vendor.status === 'Booked' && "text-emerald-500 md:bg-emerald-50/50",
-                    vendor.status === 'Quote Sent' && "text-[#AF944F] md:bg-[#AF944F]/5",
+                    vendor.status === 'Quote Sent' && "text-[#006884] md:bg-[#006884]/5",
                     vendor.status === 'Awaiting' && "text-[#D9BDB5] md:bg-[#D9BDB5]/5"
                   )}>
                     <div className={cn(
                       "w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm",
                       vendor.status === 'Booked' && "bg-emerald-500 text-white",
-                      vendor.status === 'Quote Sent' && "bg-[#AF944F] text-white",
+                      vendor.status === 'Quote Sent' && "bg-[#006884] text-white",
                       vendor.status === 'Awaiting' && "bg-[#D9BDB5] text-white"
                     )}>
                       {vendor.status === 'Booked' ? <Check className="h-3 w-3" /> : (vendor.status === 'Quote Sent' ? <FileText className="h-3 w-3" /> : <Clock className="h-3 w-3" />)}
@@ -369,8 +382,15 @@ export default function Dashboard() {
               )}
             </div>
 
-            <div className="p-6">
-              <button className="w-full h-12 border border-[#E8D5C8] bg-[#FDFBF7] rounded-xl text-[10px] font-bold text-[#AF944F] hover:bg-[#AF944F] hover:text-white hover:border-[#AF944F] transition-all uppercase tracking-[2px]">
+            <div className="p-6 flex justify-center">
+              <button 
+                className={cn(
+                  "border border-[#E8D5C8] bg-[#FDFBF7] transition-all uppercase",
+                  isDesktop 
+                    ? "w-40 h-10 rounded-lg text-[9px] font-bold text-[#006884] hover:bg-[#006884] hover:text-white hover:border-[#006884] tracking-[1.5px]" 
+                    : "w-1/2 md:w-1/3 h-12 mx-auto rounded-xl text-[10px] font-bold text-[#006884] hover:bg-[#006884] hover:text-white hover:border-[#006884] tracking-[2px]"
+                )}
+              >
                 Add Vendor
               </button>
             </div>
