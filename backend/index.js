@@ -24,6 +24,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const allowedOrigins = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.split(',').map((origin) => origin.trim()).filter(Boolean)
+  : true;
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
@@ -36,7 +39,7 @@ mongoose.connect(process.env.MONGODB_URI)
     console.error('\nTIP: Ensure your IP is whitelisted in MongoDB Atlas and the password in .env is correct.');
   });
 
-app.use(cors());
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 
 // Log all requests
